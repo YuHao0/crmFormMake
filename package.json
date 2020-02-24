@@ -1,6 +1,6 @@
 {
   "name": "crm-form-make",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "crm form make",
   "main": "dist/crm-form-make.umd.min.js",
   "author": "Yu Hao <yhwanan@foxmail.com>",
