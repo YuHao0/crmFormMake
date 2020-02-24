@@ -26,7 +26,7 @@
                     <el-form-item v-if="item.comType == 'select'" :label="item.form.label">
                         <el-select v-model="item.form.default" :placeholder="item.form.placeholder">
                             <el-option
-                                v-for="opt in item.option"
+                                v-for="opt in selectOption"
                                 :key="opt.value"
                                 :label="opt.value"
                                 :value="opt.value"
@@ -93,7 +93,8 @@ export default {
     data() {
         return {
             dataList: this.list,
-            selectItem: this.select
+            selectItem: this.select,
+            selectOption: [{ value: "选项1" }, { value: "选项2" }, { value: "选项3" }]
         };
     },
     methods: {
