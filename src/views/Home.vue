@@ -394,13 +394,25 @@ export default {
                 })
             ];
         },
+        copy(source) {
+            return JSON.parse(JSON.stringify(source));
+        },
         setList(formList) {
             let list = [];
             basicComponents.forEach(com => {
                 formList.forEach(form => {
+                    if (!form.uitype) {
+                        form.uitype = "input";
+                    }
+                    if (!form.label) {
+                        form.label = form.id;
+                    }
                     if (form.uitype == com.comType) {
-                        let obj = com;
+                        let obj = this.copy(com);
                         obj.form = { ...basicform, ...form };
+                        if (!obj.key) {
+                            obj.key = Date.parse(new Date()) + "_" + Math.ceil(Math.random() * 99999);
+                        }
                         list.push(obj);
                         if (form.key == this.selectWidget.key) {
                             this.drugSelect(obj);
@@ -469,7 +481,7 @@ export default {
     created() {}
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .form-make {
     min-width: 1200px;
     .main-content {

@@ -129,7 +129,7 @@ export default {
     }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .widget-itme-content {
     .drag-content {
         padding: 10px;

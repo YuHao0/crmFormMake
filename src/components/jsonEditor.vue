@@ -59,7 +59,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .json-editor {
     height: 100%;
     position: relative;
