@@ -248,7 +248,7 @@
 </template>
 
 <script>
-import "@/element";
+// import "@/element";
 import "@/assets/reset.css";
 import JsonEditor from "components/jsonEditor";
 import Draggable from "vuedraggable";
@@ -430,11 +430,11 @@ export default {
                 this.metaForm = this.drawInfo(this.metaForm, value.meta);
                 this.billForm.meta = this.drawInfo(this.billForm.meta, value.meta);
             }
-            if (value.main.meta.length) {
+            if (value.main && value.main.meta.length) {
                 this.metaMain = this.drawInfo(this.metaMain, value.main.meta[0]);
                 this.billForm.metaMain = this.drawInfo(this.billForm.metaMain, value.main.meta[0]);
             }
-            if (value.tabs.meta.length) {
+            if (value.tabs && value.tabs.meta.length) {
                 if (value.meta.uitype == "bill") {
                     value.tabs.meta[0].colfk = value.tabs.meta[0].colfk.toString();
                 }
