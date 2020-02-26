@@ -98,16 +98,23 @@ export default {
         };
     },
     methods: {
+        copy(source) {
+            return JSON.parse(JSON.stringify(source));
+        },
         handleMoveEnd(evt) {
             console.log("end", evt);
         },
         handleWidgetAdd(evt) {
             let index = evt.newIndex;
             const key = Date.parse(new Date()) + "_" + Math.ceil(Math.random() * 99999);
-            this.$set(this.dataList, index, {
-                ...this.dataList[index],
-                key
-            });
+            this.$set(
+                this.dataList,
+                index,
+                this.copy({
+                    ...this.dataList[index],
+                    key
+                })
+            );
             this.selectItem = this.dataList[index];
             this.$emit("onSelect", this.selectItem);
         },
@@ -122,6 +129,9 @@ export default {
     created() {},
     watch: {
         select(val) {
+            if (val.key == this.selectItem.key) {
+                return;
+            }
             this.selectItem = val;
         },
         list(val) {

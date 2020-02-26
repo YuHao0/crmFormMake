@@ -465,11 +465,13 @@ export default {
             拖拽处理
         */
         handleMoveEnd(evt, from) {
-            console.log("end", evt);
-            console.log("from", from);
+            console.warn({
+                end: evt,
+                from: from
+            });
         },
         handleMoveStart({ oldIndex }) {
-            console.log("start", oldIndex);
+            console.warn("start", oldIndex);
         },
         handleMove() {
             return true;
