@@ -2,7 +2,7 @@
         icon: "icon-input",
         name: "input",
         comType: "input",
-        这三个为系统使用字段
+        这三个为系统使用字段,服务端可忽略
 */
 
 let form = {

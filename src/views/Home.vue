@@ -26,22 +26,6 @@
             <el-col :span="16">
                 <div class="content-item edit-content">
                     <el-tabs v-model="activeType" @tab-click="editTabChange">
-                        <el-tab-pane label="窗口主体区域" name="mainForm">
-                            <widget-form
-                                ref="widgetFormMain"
-                                :list="itemsMain"
-                                :select="selectWidget"
-                                @onSelect="drugSelect"
-                            ></widget-form>
-                        </el-tab-pane>
-                        <el-tab-pane label="Tabs区域" name="tabsForm">
-                            <widget-form
-                                ref="widgetFormTabs"
-                                :list="itemsTabs"
-                                :select="selectWidget"
-                                @onSelect="drugSelect"
-                            ></widget-form>
-                        </el-tab-pane>
                         <el-tab-pane label="基本属性" name="meta">
                             <div class="form-title">窗口基本属性</div>
                             <el-form ref="form" :model="metaForm" label-position="right" label-width="120px">
@@ -141,6 +125,23 @@
                                 </div>
                             </el-form>
                         </el-tab-pane>
+                        <el-tab-pane label="窗口主体区域" name="mainForm">
+                            <widget-form
+                                ref="widgetFormMain"
+                                :list="itemsMain"
+                                :select="selectWidget"
+                                @onSelect="drugSelect"
+                            ></widget-form>
+                        </el-tab-pane>
+                        <el-tab-pane label="Tabs区域" name="tabsForm">
+                            <widget-form
+                                ref="widgetFormTabs"
+                                :list="itemsTabs"
+                                :select="selectWidget"
+                                @onSelect="drugSelect"
+                            ></widget-form>
+                        </el-tab-pane>
+
                         <el-tab-pane label="JSON区域" name="jsonContent" class="json-content">
                             <div class="control-content">
                                 <el-button @click="getJson(true)">获取JSON</el-button>
@@ -274,7 +275,7 @@ export default {
     data() {
         return {
             basicComponents,
-            activeType: "mainForm",
+            activeType: "meta",
             // querylist模版
             metaForm: {
                 name: "",
@@ -337,6 +338,7 @@ export default {
                 });
                 return;
             }
+            this.selectWidget = {};
             // 如果不是切换到jsoncontnet
             let value = this.$refs.jsonEditor.getValue();
             this.parseJson(value);
@@ -345,6 +347,7 @@ export default {
             json数据处理
         */
         makeJson() {
+            // 渲染模版选择bill时将bill中的补充字段合并
             let meta = {
                 ...this.metaForm,
                 ...(this.metaForm.uitype == "bill" ? this.billForm.meta : {})
