@@ -23,9 +23,9 @@ module.exports = {
             //     }
             // },
             sass: {
-                prependData: `
-                  @import "${resolve("src/assets/scss/var.scss")}";
-                  @import "${resolve("src/assets/scss/common.scss")}";
+                additionalData: `
+                  @import "src/assets/scss/var.scss";
+                  @import "src/assets/scss/common.scss";
                   `
             }
         }
