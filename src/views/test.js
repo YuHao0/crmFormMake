@@ -543,4 +543,4 @@ export default {
             ]
         ]
     }
-}
+};

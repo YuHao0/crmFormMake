@@ -4,10 +4,11 @@
             <draggable
                 v-model="dataList"
                 @add="handleWidgetAdd"
+                @start="handStart"
                 @end="handleMoveEnd"
                 class="drag-content"
                 v-bind="{
-                    group: 'people',
+                    group: 'forms',
                     ghostClass: 'ghost',
                     animation: 200,
                     handle: '.drag-item'
@@ -17,14 +18,21 @@
                     v-for="(item, index) in dataList"
                     :key="index"
                     class="drag-item"
-                    @click="handleSelectWidget(item)"
-                    :class="{ 'active-main-item': selectItem.key == item.key }"
+                    @click="handleSelectWidget(item, index)"
+                    @dblclick="delComPerties(index)"
+                    :class="{ 'active-main-item': activeClass(index) }"
                 >
-                    <el-form-item v-if="item.comType == 'input'" :label="item.form.label">
-                        <el-input v-model="item.form.default" readonly :placeholder="item.form.placeholder"></el-input>
+                    <el-form-item v-if="item.uitype == 'input' || !item.uitype" :label="item.label">
+                        <el-input v-model="item.default" readonly :placeholder="item.placeholder"></el-input>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'select'" :label="item.form.label">
-                        <el-select v-model="item.form.default" :placeholder="item.form.placeholder">
+                    <el-form-item v-if="item.uitype == 'label'" :label="item.label">
+                        <div>{{ item.label }}</div>
+                    </el-form-item>
+                    <el-form-item v-if="item.uitype == 'text'" :label="item.label">
+                        <el-input v-model="item.default" readonly :placeholder="item.placeholder"></el-input>
+                    </el-form-item>
+                    <el-form-item v-if="item.uitype == 'select'" :label="item.label">
+                        <el-select v-model="item.default" :placeholder="item.placeholder">
                             <el-option
                                 v-for="opt in selectOption"
                                 :key="opt.value"
@@ -34,45 +42,44 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'datepicker'" :label="item.form.label">
-                        <el-date-picker v-model="item.form.default" type="date" placeholder="选择日期">
-                        </el-date-picker>
+                    <el-form-item v-if="item.uitype == 'datepicker'" :label="item.label">
+                        <el-date-picker v-model="item.default" type="date" placeholder="选择日期"> </el-date-picker>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'title'" label="标题">
-                        <div>{{ item.form.label }}</div>
+                    <el-form-item v-if="item.uitype == 'title'" label="标题">
+                        <div>{{ item.label }}</div>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'textarea'" :label="item.form.label">
+                    <el-form-item v-if="item.uitype == 'textarea'" :label="item.label">
                         <el-input
-                            v-model="item.form.default"
+                            v-model="item.default"
                             readonly
                             type="textarea"
-                            :placeholder="item.form.placeholder"
+                            :placeholder="item.placeholder"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'radio'" :label="item.form.label">
-                        <el-radio-group v-model="item.form.default">
+                    <el-form-item v-if="item.uitype == 'radio'" :label="item.label">
+                        <el-radio-group v-model="item.default">
                             <el-radio :label="3">备选项</el-radio>
                             <el-radio :label="6">备选项</el-radio>
                             <el-radio :label="9">备选项</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'checkbox'" :label="item.form.label">
-                        <el-checkbox-group v-model="item.form.select">
+                    <el-form-item v-if="item.uitype == 'checkbox'" :label="item.label">
+                        <el-checkbox-group v-model="selectOption">
                             <el-checkbox label="复选框 A"></el-checkbox>
                             <el-checkbox label="复选框 B"></el-checkbox>
                             <el-checkbox label="复选框 C"></el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'cascader'" :label="item.form.label">
+                    <el-form-item v-if="item.uitype == 'cascader'" :label="item.label">
                         <el-cascader
-                            v-model="item.ex.value"
-                            :options="item.ex.options"
+                            v-model="item.value"
+                            :options="item.options"
                             :props="{ expandTrigger: 'hover' }"
                         ></el-cascader>
                     </el-form-item>
-                    <el-form-item v-if="item.comType == 'upload'" :label="item.form.label">
+                    <el-form-item v-if="item.uitype == 'upload'" :label="item.label">
                         <el-upload class="avatar-uploader" action="#" :auto-upload="false" list-type="picture-card">
-                            <img v-if="item.ex.imageUrl" :src="item.ex.imageUrl" class="avatar" />
+                            <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar" />
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
@@ -89,55 +96,80 @@ export default {
     components: {
         Draggable
     },
-    props: ["list", "select"],
+    props: {
+        list: {
+            type: Array,
+            default() {
+                return [];
+            }
+        },
+        ListIndex: {
+            type: Number,
+            default() {
+                return -1;
+            }
+        }
+    },
+    watch: {
+        list(val) {
+            this.dataList = val;
+        }
+    },
     data() {
         return {
             dataList: this.list,
-            selectItem: this.select,
             selectOption: [{ value: "选项1" }, { value: "选项2" }, { value: "选项3" }]
         };
     },
+    computed: {},
+    mounted() {},
     methods: {
-        copy(source) {
-            return JSON.parse(JSON.stringify(source));
+        handStart() {
+            this.$store.commit("setShowConfigurationProperties", "");
+            this.$store.commit("setLocation", { type: "", value: "" });
         },
-        handleMoveEnd(evt) {
-            console.log("end", evt);
+        activeClass(index) {
+            return (
+                (this.$store.state.location.type === "forms" && this.$store.state.location.value == index) ||
+                (this.$store.state.location.type == "tabsForms" && this.$store.state.location.value[1] == index)
+            );
+        },
+        handleMoveEnd() {
+            this.$emit("formChange", { dataList: this.dataList, index: this.ListIndex });
         },
         handleWidgetAdd(evt) {
-            let index = evt.newIndex;
-            const key = Date.parse(new Date()) + "_" + Math.ceil(Math.random() * 99999);
-            this.$set(
-                this.dataList,
-                index,
-                this.copy({
-                    ...this.dataList[index],
-                    key
-                })
-            );
-            this.selectItem = this.dataList[index];
-            this.$emit("onSelect", this.selectItem);
+            let index = evt.newIndex,
+                list = this.dataList[index];
+            this.$set(this.dataList, index, { label: list.uitype, uitype: list.uitype });
+            this.$emit("formChange", { dataList: this.dataList, index: this.ListIndex });
         },
-        handleSelectWidget(item) {
-            this.selectItem = item;
-            this.$emit("onSelect", this.selectItem);
+        handleSelectWidget(item, index) {
+            this.setLocation(index);
+            this.$store.commit("setConProPertiesForm", item);
+        },
+        delComPerties(index) {
+            this.setLocation(index);
+            this.$emit("delComPerties");
+        },
+        setLocation(index) {
+            this.$store.commit("setShowConfigurationProperties", "forms");
+            let location =
+                this.ListIndex >= 0
+                    ? {
+                          type: "tabsForms",
+                          value: [this.ListIndex, index]
+                      }
+                    : {
+                          type: "forms",
+                          value: index
+                      };
+            this.$store.commit("setLocation", location);
         },
         getList() {
             return this.dataList;
         }
     },
-    created() {},
-    watch: {
-        select(val) {
-            if (val.key == this.selectItem.key) {
-                return;
-            }
-            this.selectItem = val;
-        },
-        list(val) {
-            this.dataList = val;
-        }
-    }
+    created() {}
 };
 </script>
 <style lang="scss">

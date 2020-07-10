@@ -1,15 +1,34 @@
 <template>
-    <div class="form-make">
-        <el-row class="main-content">
+    <div class="form-make" id="formMake" :style="{ height: `${makeHeight}px`, overflow: 'hidden' }">
+        <el-row class="main-content" :style="{ height: '100%', overflow: 'auto' }">
             <el-col :span="3">
                 <div class="content-item components-wrap">
                     <div class="components-title">选择组件</div>
                     <draggable
                         class="components-content"
                         tag="ul"
+                        v-show="$store.state.typeComponts === 'buttons'"
                         v-bind="{
-                            group: { name: 'people', pull: 'clone', put: false },
-                            sort: false,
+                            group: { name: 'buttons', pull: 'clone', put: false },
+                            sort: true,
+                            ghostClass: 'ghost'
+                        }"
+                        :list="buttons"
+                        @end="handleMoveEnd($event, 'source')"
+                        @start="handleMoveStart"
+                        :move="handleMove"
+                    >
+                        <li class="components-item" v-for="(item, index) in buttons" :key="index">
+                            {{ item.name }}
+                        </li>
+                    </draggable>
+                    <draggable
+                        class="components-content"
+                        tag="ul"
+                        v-show="$store.state.typeComponts === 'forms' || $store.state.typeComponts === 'tabs'"
+                        v-bind="{
+                            group: { name: 'forms', pull: 'clone', put: false },
+                            sort: true,
                             ghostClass: 'ghost'
                         }"
                         :list="basicComponents"
@@ -21,143 +40,115 @@
                             {{ item.name }}
                         </li>
                     </draggable>
+                    <!-- <select-componts></select-componts> -->
                 </div>
             </el-col>
             <el-col :span="16">
                 <div class="content-item edit-content">
                     <el-tabs v-model="activeType" @tab-click="editTabChange">
-                        <el-tab-pane label="基本属性" name="meta">
+                        <el-tab-pane label="基本属性" name="meta" class="tabHeight">
                             <div class="form-title">窗口基本属性</div>
-                            <el-form ref="form" :model="metaForm" label-position="right" label-width="120px">
-                                <el-form-item label="窗口名称" prop="name">
-                                    <el-input v-model="metaForm.name"></el-input>
+                            <el-form
+                                ref="form"
+                                :model="sys_window"
+                                v-if="sys_window"
+                                label-position="right"
+                                label-width="140px"
+                            >
+                                <el-form-item label="BPM模型ID" prop="model_id">
+                                    <el-input v-model="sys_window.model_id"></el-input>
                                 </el-form-item>
-                                <el-form-item label="渲染模板" prop="uitype">
-                                    <el-select v-model="metaForm.uitype" placeholder="请选择">
+                                <el-form-item label="窗口名称" prop="name">
+                                    <el-input
+                                        v-model="sys_window.name"
+                                        placeholder="显示到窗口标题以及标签上"
+                                    ></el-input>
+                                </el-form-item>
+                                <el-form-item label="渲染模板" prop="template">
+                                    <el-select v-model="sys_window.template" placeholder="请选择">
                                         <el-option label="query_list" value="query_list"> </el-option>
                                         <el-option label="bill" value="bill"> </el-option>
+                                        <el-option label="tree_query_list" value="tree_query_list"> </el-option>
+                                        <el-option label="query_detail" value="query_detail"> </el-option>
                                     </el-select>
                                 </el-form-item>
-                                <el-form-item label="服务url" prop="url">
-                                    <el-input v-model="metaForm.url"></el-input>
+                                <el-form-item label="关联窗口" prop="ref_winid">
+                                    <el-input v-model="sys_window.ref_winid"></el-input>
                                 </el-form-item>
-                                <div v-if="metaForm.uitype == 'bill'">
-                                    <el-form-item label="busitype">
-                                        <el-select v-model="billForm.meta.busitype" placeholder="请选择">
-                                            <el-option label="0" value="0"> </el-option>
-                                            <el-option label="1" value="1"> </el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                    <el-form-item label="colpk">
-                                        <el-input
-                                            v-model="billForm.meta.colpk"
-                                            placeholder="多个请用英文逗号隔开"
-                                        ></el-input>
-                                    </el-form-item>
-                                </div>
-                            </el-form>
-                            <div class="form-title">主体区域属性</div>
-                            <el-form ref="form" :model="metaMain" label-position="right" label-width="120px">
-                                <el-form-item label="对象名" prop="id">
-                                    <el-input v-model="metaMain.id"></el-input>
+                                <el-form-item label="数据源" prop="data_source">
+                                    <el-input v-model="sys_window.data_source"></el-input>
                                 </el-form-item>
-                                <el-form-item label="标题" prop="title">
-                                    <el-input v-model="metaMain.title"></el-input>
-                                </el-form-item>
-                                <el-form-item label="类型" prop="type">
-                                    <el-input v-model="metaMain.type"></el-input>
-                                </el-form-item>
-                                <div v-if="metaForm.uitype == 'bill'">
-                                    <el-form-item label="禁用状态">
-                                        <el-select v-model="billForm.metaMain.disable" placeholder="请选择">
-                                            <el-option label="0" value="0"> </el-option>
-                                            <el-option label="1" value="1"> </el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                    <el-form-item label="禁用表达式">
-                                        <el-input
-                                            v-model="billForm.metaMain.disable2"
-                                            placeholder="例：{status} == 50 ? '1':'0'"
-                                        ></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="初始化SQL">
-                                        <el-input
-                                            type="textarea"
-                                            autosize
-                                            v-model="billForm.metaMain.sqlinit"
-                                        ></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="查询SQL">
-                                        <el-input
-                                            type="textarea"
-                                            autosize
-                                            v-model="billForm.metaMain.sqlselect"
-                                        ></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="触发器SQL">
-                                        <el-input
-                                            type="textarea"
-                                            autosize
-                                            v-model="billForm.metaMain.billtrigger"
-                                        ></el-input>
-                                    </el-form-item>
-                                </div>
-                            </el-form>
-                            <div class="form-title">TAB页基础属性</div>
-                            <el-form ref="form" :model="metaTab" label-position="right" label-width="120px">
-                                <el-form-item label="id" prop="id">
-                                    <el-input v-model="metaTab.id"></el-input>
-                                </el-form-item>
-                                <el-form-item label="标签" prop="title">
-                                    <el-input v-model="metaTab.title"></el-input>
-                                </el-form-item>
-                                <el-form-item label="类型" prop="type">
-                                    <el-select v-model="metaTab.type" placeholder="请选择">
-                                        <el-option label="form" value="form"> </el-option>
-                                        <el-option label="table" value="table"> </el-option>
-                                        <el-option label="grid" value="grid"> </el-option>
+                                <el-form-item label="是否物理删除" prop="hard_delete">
+                                    <el-select v-model="sys_window.hard_delete" placeholder="请选择">
+                                        <el-option label="是" value="1"> </el-option>
+                                        <el-option label="否" value="0"> </el-option>
                                     </el-select>
                                 </el-form-item>
-                                <div v-if="metaForm.uitype == 'bill'">
-                                    <el-form-item label="查询SQL">
-                                        <el-input
-                                            type="textarea"
-                                            autosize
-                                            v-model="billForm.metaTab.sqlselect"
-                                        ></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="colfk">
-                                        <el-input
-                                            v-model="billForm.metaTab.colfk"
-                                            placeholder="多个请用英文逗号隔开"
-                                        ></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="显示条件">
-                                        <el-input
-                                            v-model="billForm.metaTab.visible"
-                                            placeholder="例：{$.fs_hosp_deploy_order.status} == 50 ? '1':'0'"
-                                        ></el-input>
-                                    </el-form-item>
-                                </div>
+                                <el-form-item label="窗口绑定表名" prop="table_bind">
+                                    <el-input v-model="sys_window.audit_flag"></el-input>
+                                </el-form-item>
+                                <el-form-item label="写数据权限" prop="write_permission">
+                                    <el-checkbox-group v-model="sys_window.write_permission">
+                                        <el-checkbox label="表单创建人"></el-checkbox>
+                                        <el-checkbox label="上级"></el-checkbox>
+                                        <el-checkbox label="BPM权限"></el-checkbox>
+                                    </el-checkbox-group>
+                                </el-form-item>
+                                <div class="form-title">窗口配置详情信息</div>
+                                <el-form-item label="窗口名" prop="name">
+                                    <el-input v-model="sys_window.data.meta.name"></el-input>
+                                </el-form-item>
+                                <el-form-item label="窗口类型" prop="template">
+                                    <el-select
+                                        v-model="sys_window.data.meta.uitype"
+                                        placeholder="请选择(与渲染模板一致)"
+                                    >
+                                        <el-option label="query_list" value="query_list"> </el-option>
+                                        <el-option label="bill" value="bill"> </el-option>
+                                        <el-option label="tree_query_list" value="tree_query_list"> </el-option>
+                                        <el-option label="query_detail" value="query_detail"> </el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item label="页面参数请求接口" prop="url">
+                                    <el-input v-model="sys_window.data.meta.url"></el-input>
+                                </el-form-item>
+                                <el-form-item label="MQ TAG" prop="msgtag">
+                                    <el-input type="textarea" v-model="sys_window.data.meta.msgtag"></el-input>
+                                </el-form-item>
+                                <el-form-item label="MQ 条件" prop="msgcondition">
+                                    <el-input type="textarea" v-model="sys_window.data.meta.msgcondition"></el-input>
+                                </el-form-item>
+                                <el-form-item label="MQ 追加属性" prop="msgextprops">
+                                    <el-input type="textarea" v-model="sys_window.data.meta.msgextprops"></el-input>
+                                </el-form-item>
                             </el-form>
                         </el-tab-pane>
-                        <el-tab-pane label="窗口主体区域" name="mainForm">
+                        <el-tab-pane label="Buttons区域" name="buttons">
+                            <widget-button
+                                ref="buttons"
+                                :list="sys_button"
+                                @buttonChange="buttonChange"
+                                @delComPerties="delComPerties"
+                            ></widget-button>
+                        </el-tab-pane>
+                        <el-tab-pane label="窗口主体区域" name="forms">
                             <widget-form
                                 ref="widgetFormMain"
-                                :list="itemsMain"
-                                :select="selectWidget"
-                                @onSelect="drugSelect"
+                                :list="mainItems"
+                                @formChange="formChange"
+                                @delComPerties="delComPerties"
                             ></widget-form>
                         </el-tab-pane>
-                        <el-tab-pane label="Tabs区域" name="tabsForm">
-                            <widget-form
-                                ref="widgetFormTabs"
-                                :list="itemsTabs"
-                                :select="selectWidget"
-                                @onSelect="drugSelect"
-                            ></widget-form>
+                        <el-tab-pane label="Tabs区域" name="tabs">
+                            <Tabs
+                                :tabs="tabs"
+                                @addTabs="addTabs"
+                                @delTabs="delTabs"
+                                @delComPerties="delComPerties"
+                                @beforeTabs="beforeTabs"
+                                @laterTabs="laterTabs"
+                            ></Tabs>
                         </el-tab-pane>
-
                         <el-tab-pane label="JSON区域" name="jsonContent" class="json-content">
                             <div class="control-content">
                                 <el-button @click="getJson(true)">获取JSON</el-button>
@@ -169,95 +160,13 @@
             </el-col>
             <el-col :span="5">
                 <div class="content-item attribute-content">
-                    <div class="attribute-title">属性配置</div>
-                    <el-form ref="form" label-position="right" v-if="selectWidget.comType" label-width="80px">
-                        <el-form-item label="属性名">
-                            <el-input v-model="selectWidget.form.id"></el-input>
-                        </el-form-item>
-                        <el-form-item label="属性标签">
-                            <el-input v-model="selectWidget.form.label"></el-input>
-                        </el-form-item>
-                        <el-form-item label="属性类型">
-                            <el-select v-model="selectWidget.form.type" placeholder="请选择">
-                                <el-option label="number" value="number"> </el-option>
-                                <el-option label="string" value="string"> </el-option>
-                                <el-option label="date" value="date"> </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="默认值">
-                            <el-input v-model="selectWidget.form.default"></el-input>
-                        </el-form-item>
-                        <el-form-item label="placeholder">
-                            <el-input v-model="selectWidget.form.placeholder"></el-input>
-                        </el-form-item>
-                        <el-form-item label="字典url">
-                            <el-input v-model="selectWidget.form.lookup"></el-input>
-                        </el-form-item>
-                        <el-form-item label="是否可见">
-                            <el-select v-model="selectWidget.form.visible" placeholder="请选择">
-                                <el-option label="0" value="0"> </el-option>
-                                <el-option label="1" value="1"> </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="disable">
-                            <el-input v-model="selectWidget.form.disable"></el-input>
-                        </el-form-item>
-                        <el-form-item label="updatable">
-                            <el-select v-model="selectWidget.form.updatable" placeholder="请选择">
-                                <el-option label="0" value="0"> </el-option>
-                                <el-option label="1" value="1"> </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="disable">
-                            <el-input v-model="selectWidget.form.disable"></el-input>
-                        </el-form-item>
-                        <el-form-item label="required">
-                            <el-input v-model="selectWidget.form.required"></el-input>
-                        </el-form-item>
-                        <el-form-item label="查找窗口">
-                            <el-input v-model="selectWidget.form.lookupwindow"></el-input>
-                        </el-form-item>
-                        <el-form-item label="带回属性">
-                            <el-input v-model="selectWidget.form.lookupcolumn"></el-input>
-                        </el-form-item>
-                        <el-form-item label="returnback">
-                            <el-input v-model="selectWidget.form.returnback"></el-input>
-                        </el-form-item>
-                        <el-form-item label="writeback">
-                            <el-input v-model="selectWidget.form.writeback"></el-input>
-                        </el-form-item>
-                        <el-form-item label="分隔符">
-                            <el-input v-model="selectWidget.form.separator"></el-input>
-                        </el-form-item>
-                        <el-form-item label="尺寸">
-                            <el-select v-model="selectWidget.form.size" placeholder="请选择">
-                                <el-option label="small" value="small"> </el-option>
-                                <el-option label="medium" value="medium"> </el-option>
-                                <el-option label="large" value="large"> </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="limit">
-                            <el-input v-model="selectWidget.form.limit"></el-input>
-                        </el-form-item>
-                        <el-form-item label="chineseid">
-                            <el-input v-model="selectWidget.form.chineseid"></el-input>
-                        </el-form-item>
-                        <el-form-item label="maxlength">
-                            <el-input v-model="selectWidget.form.maxlength"></el-input>
-                        </el-form-item>
-                        <el-form-item label="colname">
-                            <el-input v-model="selectWidget.form.colname"></el-input>
-                        </el-form-item>
-                        <el-form-item label="regex">
-                            <el-input v-model="selectWidget.form.regex"></el-input>
-                        </el-form-item>
-                        <el-form-item label="param">
-                            <el-input v-model="selectWidget.form.param"></el-input>
-                        </el-form-item>
-                        <el-form-item label="multiple">
-                            <el-input v-model="selectWidget.form.multiple"></el-input>
-                        </el-form-item>
-                    </el-form>
+                    <!-- <div class="attribute-title">属性配置</div> -->
+                    <attribute-components></attribute-components>
+                    <div class="flex-con" v-show="showSave">
+                        <!-- <el-button>还原</el-button>  -->
+                        <!-- <el-button @click="delComPerties">删除</el-button>  -->
+                        <el-button @click="saveComPerties">保存</el-button>
+                    </div>
                 </div>
             </el-col>
         </el-row>
@@ -269,15 +178,34 @@
 import "@/assets/reset.css";
 import JsonEditor from "components/jsonEditor";
 import Draggable from "vuedraggable";
-import WidgetForm from "components/WidgetForm";
-import { basicComponents, basicform } from "components/componentsConfig.js";
+import WidgetForm from "components/draggable/WidgetForm";
+import WidgetButton from "components/draggable/WidgetButton";
+// import SelectComponts from "components/draggable/selectComponents/index";
+import AttributeComponents from "components/attributeComponents/index";
+import { basicComponents, buttons } from "components/componentsConfig.js";
+import Tabs from "components/areaComponents/Tabs.vue";
+// import xJson from "./a";
 export default {
     props: {
         options: {
             type: Object,
             default() {
                 return {
-                    filterEmpty: false
+                    buttons: [],
+                    data_permission: {},
+                    window: {
+                        data: {
+                            meta: {},
+                            main: {
+                                meta: [],
+                                items: []
+                            },
+                            tabs: {
+                                meta: [],
+                                items: []
+                            }
+                        }
+                    }
                 };
             }
         }
@@ -285,119 +213,249 @@ export default {
     name: "crm-form-make",
     components: {
         JsonEditor,
-        Draggable,
-        WidgetForm
+        WidgetForm,
+        WidgetButton,
+        Tabs,
+        AttributeComponents,
+        Draggable
+        // SelectComponts
+    },
+    watch: {
+        options(val) {
+            this.disOptions(val);
+        }
     },
     data() {
         return {
             basicComponents,
+            buttons,
             activeType: "meta",
-            // querylist模版
-            metaForm: {
-                name: "",
-                uitype: "",
-                url: ""
-            },
-            metaMain: {
-                id: "",
-                type: "",
-                title: ""
-            },
-            metaTab: {
-                id: "",
-                title: "",
-                type: ""
-            },
-            selectWidget: {},
-            itemsMain: [],
-            itemsTabs: [],
-            // bill模版补充
-            billForm: {
-                meta: {
-                    busitype: "",
-                    colpk: ""
-                },
-                metaMain: {
-                    disable: "",
-                    disable2: "",
-                    sqlinit: "",
-                    sqlselect: "",
-                    billtrigger: ""
-                },
-                metaTab: {
-                    sqlselect: "",
-                    colfk: "",
-                    visible: ""
-                }
-            },
             formData: {
-                main: {
-                    meta: [],
-                    items: [[]]
-                },
-                tabs: {
-                    meta: [],
-                    items: [[]]
+                buttons: [],
+                data_permission: {},
+                window: {
+                    id: "",
+                    model_id: "",
+                    name: "",
+                    template: "",
+                    ref_winid: "",
+                    data_source: "",
+                    hard_delete: "",
+                    table_bind: "",
+                    write_permission: "",
+                    data: {
+                        meta: {
+                            name: "",
+                            uitype: "",
+                            url: "",
+                            msgtag: "",
+                            msgcondition: "",
+                            msgextprops: ""
+                        },
+                        main: {
+                            meta: [],
+                            items: []
+                        },
+                        tabs: {
+                            meta: [],
+                            items: []
+                        }
+                    }
                 }
             },
-            formJSON: ""
+            sys_button: [],
+            sys_window: {
+                id: "",
+                model_id: "",
+                name: "",
+                template: "",
+                ref_winid: "",
+                data_source: "",
+                hard_delete: "",
+                table_bind: "",
+                write_permission: "",
+                data: {
+                    meta: {
+                        name: "",
+                        uitype: "",
+                        url: "",
+                        msgtag: "",
+                        msgcondition: "",
+                        msgextprops: ""
+                    }
+                }
+            },
+            mainItems: [],
+            tabs: {
+                meta: [],
+                items: []
+            },
+            configuration: {},
+            selectWidget: {},
+            isShowConfiguration: false,
+            makeHeight: "100%"
         };
     },
+    computed: {
+        showSave() {
+            let con = this.$store.state.showConfigurationProperties;
+            return con == "forms" || con === "buttons" || con === "tabs";
+        }
+    },
+    created() {
+        this.disOptions(this.options);
+    },
+    mounted() {
+        this.setHeight();
+    },
     methods: {
+        setHeight() {
+            this.makeHeight = document.documentElement.clientHeight - document.getElementById("formMake").offsetTop;
+        },
         // 切换主区域tab
         editTabChange(tab) {
+            this.$store.commit("setShowConfigurationProperties", "");
+            this.$store.commit("setLocation", { type: "", value: "" });
+            this.$store.commit("setTypeComponts", tab.name);
+            this.selectWidget = {};
+            this.isShowConfiguration = false;
             if (tab.name == "jsonContent") {
                 this.makeJson();
                 this.$nextTick(() => {
                     this.$refs.jsonEditor.api("refresh");
                     this.$refs.jsonEditor.api("focus");
                 });
-                return;
             }
-            this.selectWidget = {};
-            // 如果不是切换到jsoncontnet
-            let value = this.$refs.jsonEditor.getValue();
-            this.parseJson(value);
         },
-        /*
-            json数据处理
-        */
-        makeJson() {
-            // 渲染模版选择bill时将bill中的补充字段合并
-            let meta = {
-                ...this.metaForm,
-                ...(this.metaForm.uitype == "bill" ? this.billForm.meta : {})
-            };
-            let metaMain = {
-                ...this.metaMain,
-                ...(this.metaForm.uitype == "bill" ? this.billForm.metaMain : {})
-            };
+        addTabs(param = {}) {
+            console.log(this.tabs.meta);
+            this.tabs.meta.push({
+                title: "新增Tabs"
+            });
+            this.tabs.items.push([]);
+            param.callBack();
+        },
+        delTabs(param = {}) {
+            this.tabs.meta.splice(param.index, 1);
+            this.tabs.items.splice(param.index, 1);
+            param.callBack();
+        },
+        beforeTabs(param = {}) {
+            let index = param.index;
+            if (param.index != 0) {
+                this.tabs.meta = this.swapArray(this.tabs.meta, index, -1);
+                this.tabs.items = this.swapArray(this.tabs.items, index, -1);
+                param.callBack();
+            }
+        },
+        laterTabs(param = {}) {
+            let len = this.tabs.meta.length,
+                index = param.index;
+            if (param.index + 1 != len) {
+                this.tabs.meta = this.swapArray(this.tabs.meta, index, 1);
+                this.tabs.items = this.swapArray(this.tabs.items, index, 1);
+                param.callBack();
+            }
+        },
+        swapArray(arr, index, num) {
+            // let _arr = arr;
+            // let info = _arr[index + num];
+            // _arr[index + num] = _arr[index];
+            // _arr[index] = info;
+            arr[index] = arr.splice(index + num, 1, arr[index])[0];
+            return arr;
+        },
+        saveComPerties() {
+            let location = this.$store.state.location;
+            switch (location.type) {
+                case "buttons":
+                    this.$set(
+                        this.sys_button,
+                        location.value,
+                        JSON.parse(JSON.stringify(this.$store.state.conProPertiesButtons))
+                    );
+                    break;
+                case "forms":
+                    this.$set(
+                        this.mainItems,
+                        location.value,
+                        JSON.parse(JSON.stringify(this.$store.state.conProPertiesForm))
+                    );
+                    break;
+                case "tabs":
+                    this.$set(
+                        this.tabs.meta,
+                        location.value,
+                        JSON.parse(JSON.stringify(this.$store.state.conProPertiesTabs))
+                    );
+                    break;
+                case "tabsForms":
+                    console.log(location.value);
+                    this.$set(
+                        this.tabs.items[location.value[0]],
+                        location.value[1],
+                        JSON.parse(JSON.stringify(this.$store.state.conProPertiesForm))
+                    );
+                    break;
+                default:
+                    break;
+            }
+        },
+        delComPerties() {
+            this.$confirm("此操作将永久删除该信息, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                let location = this.$store.state.location;
+                switch (location.type) {
+                    case "buttons":
+                        this.sys_button.splice(location.value, 1);
+                        break;
+                    case "forms":
+                        this.mainItems.splice(location.value, 1);
+                        break;
+                    case "tabsForms":
+                        this.this.tabs.items[location.value[0]].splice(location.value[1], 1);
+                        break;
+                    default:
+                        break;
+                }
+                this.$message({
+                    type: "success",
+                    message: "删除成功!"
+                });
+            });
+        },
+        buttonChange(arr) {
+            this.sys_button = arr;
+        },
+        formChange(param = {}) {
+            this.mainItems = param.dataList;
+        },
+        //处理传输过来的数据
+        disOptions(obj) {
+            obj.buttons && (this.sys_button = obj.buttons);
+            if (obj.window) {
+                this.sys_window = Object.assign(this.sys_window, obj.window);
+                if (!this.sys_window.write_permission) {
+                    this.sys_window.write_permission = [];
+                }
 
-            let metaTab = {
-                ...this.metaTab,
-                ...(this.metaForm.uitype == "bill" ? this.billForm.metaTab : {})
+                if (obj.window.data) {
+                    let data = obj.window.data;
+                    this.mainItems = data.main.items[0];
+                    this.tabs = data.tabs;
+                }
+            }
+        },
+        makeJson() {
+            this.formData.buttons = this.sys_button;
+            this.formData.window = this.sys_window;
+            this.formData.window.data.main = {
+                items: [this.mainItems]
             };
-            if (this.metaForm.uitype == "bill") {
-                meta.colpk = meta.colpk.split(",");
-                metaTab.colfk = metaTab.colfk.split(",");
-            }
-            // meta 处理
-            this.$set(this.formData, "meta", meta);
-            if (!this.formData.main.meta.length) {
-                this.formData.main.meta.push(metaMain);
-            } else {
-                this.formData.main.meta[0] = metaMain;
-            }
-            if (!this.formData.tabs.meta.length) {
-                this.formData.tabs.meta.push(metaTab);
-            } else {
-                this.formData.tabs.meta[0] = metaTab;
-            }
-            // items 处理
-            let itemsMain = this.$refs.widgetFormMain.getList();
-            let itemsTabs = this.$refs.widgetFormTabs.getList();
-            this.formData.main.items[0] = this.getList(itemsMain);
-            this.formData.tabs.items[0] = this.getList(itemsTabs);
+            this.formData.window.data.tabs = this.tabs;
         },
         getList(list) {
             return [
@@ -416,73 +474,15 @@ export default {
         copy(source) {
             return JSON.parse(JSON.stringify(source));
         },
-        setList(formList) {
-            let list = [];
-            basicComponents.forEach(com => {
-                formList.forEach(form => {
-                    if (!form.uitype) {
-                        form.uitype = "input";
-                    }
-                    if (!form.label) {
-                        form.label = form.id;
-                    }
-                    if (form.uitype == com.comType) {
-                        let obj = this.copy(com);
-                        obj.form = { ...basicform, ...form };
-                        if (!obj.key) {
-                            obj.key = Date.parse(new Date()) + "_" + Math.ceil(Math.random() * 99999);
-                        }
-                        list.push(obj);
-                        if (form.key == this.selectWidget.key) {
-                            this.drugSelect(obj);
-                        }
-                    }
-                });
-            });
-            return list;
-        },
-        parseJson(value) {
-            if (typeof value.meta == "object") {
-                if (value.meta.uitype == "bill") {
-                    value.meta.colpk = value.meta.colpk.toString();
-                }
-                this.metaForm = this.drawInfo(this.metaForm, value.meta);
-                this.billForm.meta = this.drawInfo(this.billForm.meta, value.meta);
-            }
-            if (value.main && value.main.meta.length) {
-                this.metaMain = this.drawInfo(this.metaMain, value.main.meta[0]);
-                this.billForm.metaMain = this.drawInfo(this.billForm.metaMain, value.main.meta[0]);
-            }
-            if (value.tabs && value.tabs.meta.length) {
-                if (value.meta.uitype == "bill") {
-                    value.tabs.meta[0].colfk = value.tabs.meta[0].colfk.toString();
-                }
-                this.metaTab = this.drawInfo(this.metaTab, value.tabs.meta[0]);
-                this.billForm.metaTab = this.drawInfo(this.billForm.metaTab, value.tabs.meta[0]);
-            }
-            if (value.tabs.items[0].length) {
-                this.itemsTabs = this.setList(value.tabs.items[0]);
-            }
-            if (value.main.items[0].length) {
-                this.itemsMain = this.setList(value.main.items[0]);
-            }
-        },
         getJson(emit) {
             this.makeJson();
             let json = JSON.parse(JSON.stringify(this.formData));
             emit && this.$emit("getJson", json);
             return json;
         },
-        drawInfo(target, source) {
-            let res = {};
-            Object.keys(target).forEach(item => {
-                res[item] = source[item] || target[item];
-            });
-            return res;
-        },
         /*
-            拖拽处理
-        */
+        拖拽处理
+    */
         handleMoveEnd(evt, from) {
             console.warn({
                 end: evt,
@@ -494,14 +494,11 @@ export default {
         },
         handleMove() {
             return true;
-        },
-        drugSelect(item) {
-            this.selectWidget = item;
         }
-    },
-    created() {
-        // this.parseJson();
     }
+    // created() {
+    //     // this.parseJson();
+    // }
 };
 </script>
 <style lang="scss">
@@ -509,9 +506,19 @@ export default {
     min-width: 1200px;
     .main-content {
         .el-col {
+            height: 100%;
+            overflow: hidden;
             .content-item {
                 padding: 10px;
-                min-height: calc(100vh - 61px);
+                // min-height: calc(100vh - 61px);
+                height: 100%;
+                .el-tabs {
+                    height: 100%;
+                }
+                .el-tabs__content {
+                    max-height: calc(100% - 70px);
+                    overflow: auto;
+                }
             }
             .components-wrap {
                 .components-title {
@@ -523,7 +530,7 @@ export default {
                     flex-wrap: wrap;
                     .components-item {
                         margin: 1%;
-                        width: 48%;
+                        width: 98%;
                         cursor: move;
                         user-select: none;
                         line-height: 30px;
@@ -556,6 +563,10 @@ export default {
                         margin-bottom: 10px;
                     }
                 }
+                .tabHeight {
+                    height: 800px;
+                    overflow: auto;
+                }
             }
             .attribute-content {
                 position: sticky;
@@ -566,6 +577,11 @@ export default {
                 }
                 .el-select {
                     width: 100%;
+                }
+                .flex-con {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
             }
         }

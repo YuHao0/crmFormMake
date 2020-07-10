@@ -306,25 +306,16 @@ const basicComponents = [
     {
         icon: "icon-title",
         name: "标题",
-        uitype: "title",
+        comType: "title",
         form: {
             label: "标题",
             uitype: "title"
         }
     },
     {
-        icon: "icon-label",
-        name: "label",
-        uitype: "label",
-        form: {
-            label: "标题",
-            uitype: "label"
-        }
-    },
-    {
         icon: "icon-input",
         name: "单行文本",
-        uitype: "input",
+        comType: "input",
         form: {
             label: "单行文本",
             uitype: "input"
@@ -333,7 +324,7 @@ const basicComponents = [
     {
         icon: "icon-textarea",
         name: "多行文本",
-        uitype: "textarea",
+        comType: "textarea",
         form: {
             label: "多行文本",
             uitype: "textarea"
@@ -342,7 +333,7 @@ const basicComponents = [
     {
         icon: "icon-select",
         name: "下拉选择",
-        uitype: "select",
+        comType: "select",
         form: {
             label: "下拉选择",
             uitype: "select"
@@ -351,7 +342,7 @@ const basicComponents = [
     {
         icon: "icon-radio",
         name: "单选",
-        uitype: "radio",
+        comType: "radio",
         form: {
             label: "单选",
             uitype: "radio"
@@ -360,7 +351,7 @@ const basicComponents = [
     {
         icon: "icon-checkbox",
         name: "多选",
-        uitype: "checkbox",
+        comType: "checkbox",
         form: {
             label: "多选",
             uitype: "checkbox",
@@ -370,7 +361,7 @@ const basicComponents = [
     {
         icon: "icon-cascader",
         name: "级联选择",
-        uitype: "cascader",
+        comType: "cascader",
         form: {
             label: "级联选择",
             uitype: "cascader"
@@ -383,7 +374,7 @@ const basicComponents = [
     {
         icon: "icon-upload",
         name: "上传文件",
-        uitype: "upload",
+        comType: "upload",
         form: {
             label: "上传文件",
             uitype: "cascader"
@@ -395,41 +386,17 @@ const basicComponents = [
     {
         icon: "icon-date",
         name: "日期选择",
-        uitype: "datepicker",
+        comType: "datepicker",
         form: {
             type: "date",
             label: "时间选择",
             uitype: "datepicker"
         }
-    },
-    {
-        icon: "icon-time-select",
-        name: "时间选择",
-        uitype: "timepicker"
     }
 ];
 
-const buttons = [
-    {
-        id: "",
-        code: "",
-        event: "",
-        name: "新建按钮",
-        rw_flag: "",
-        icon: "",
-        tranfer_winid: "",
-        param: "",
-        lookupcolumn: "",
-        returnback: "",
-        show_button: "",
-        valid_flag: "",
-        position_left: "",
-        has_required: ""
-    }
-];
+basicComponents.forEach(item => {
+    item.form = { ...form, ...item.form };
+});
 
-// basicComponents.forEach(item => {
-//     item.form = { ...form, ...item.form };
-// });
-
-export { basicComponents, buttons, form as basicform };
+export { basicComponents, form as basicform };
