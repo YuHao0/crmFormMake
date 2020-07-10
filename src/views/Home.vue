@@ -457,28 +457,20 @@ export default {
             };
             this.formData.window.data.tabs = this.tabs;
         },
-        getList(list) {
-            return [
-                ...list.map(item => {
-                    let form = {};
-                    Object.keys(item.form).forEach(key => {
-                        if (item.form[key] || !this.options.filterEmpty) {
-                            form[key] = item.form[key];
-                            form.key = item.key;
-                        }
-                    });
-                    return form;
-                })
-            ];
-        },
         copy(source) {
             return JSON.parse(JSON.stringify(source));
         },
         getJson(emit) {
-            this.makeJson();
-            let json = JSON.parse(JSON.stringify(this.formData));
-            emit && this.$emit("getJson", json);
-            return json;
+            // this.makeJson();
+            try {
+                let json = JSON.parse(JSON.stringify(this.$refs.jsonEditor.getValue()));
+                this.disOptions(json);
+                this.formData = json;
+                emit && this.$emit("getJson", json);
+                return json;
+            } catch (error) {
+                console.error(error);
+            }
         },
         /*
         拖拽处理
