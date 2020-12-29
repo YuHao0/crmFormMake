@@ -1,6 +1,6 @@
 <template>
     <div>
-        <crmFormMake ref="crmFormMake" @getJson="formMakeData"></crmFormMake>
+        <crmFormMake ref="crmFormMake" :options="xJson" @getJson="formMakeData"></crmFormMake>
     </div>
 </template>
 <script>
@@ -15,11 +15,18 @@ export default {
             return this.data;
         }
     },
+    data() {
+        return {
+            xJson: {
+                tabs: {},
+            }
+        };
+    },
+    mounted() {},
     methods: {
         formMakeData(data) {
             this.$emit("formMakeData", data);
         }
-    },
-    mounted() {}
+    }
 };
 </script>

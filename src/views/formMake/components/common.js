@@ -7,10 +7,3 @@ export function assign(param = {}) {
   }
   return obj;
 }
-
-export function permuteArr(arr, oldIndex, newIndex) {
-  let oldData = arr[oldIndex];
-  arr.splice(oldIndex, 1);
-  arr.splice(newIndex - 1, 0, oldData);
-  return arr;
-}

@@ -1,0 +1,580 @@
+<template>
+  <div
+    class="form-make"
+    id="formMake"
+    :style="{ height: `${makeHeight}px`, overflow: 'hidden' }"
+  >
+    <el-row class="main-content" :style="{ height: '100%', overflow: 'auto' }">
+      <el-col :span="3">
+        <div class="content-item components-wrap">
+          <el-button @click="getJson(true)">保存配置</el-button>
+          <div class="components-title">选择组件</div>
+          <div class="components-box">
+            <draggable
+              class="components-content"
+              tag="ul"
+              v-show="typeComponts === 'buttons'"
+              v-bind="{
+                group: { name: 'buttons', pull: 'clone', put: false },
+                sort: true,
+                ghostClass: 'ghost',
+              }"
+              :list="buttons"
+              @end="handleMoveEnd($event, 'source')"
+              @start="handleMoveStart"
+              :move="handleMove"
+            >
+              <li
+                class="components-item"
+                v-for="(item, index) in buttons"
+                :key="index"
+              >
+                {{ item.name }}
+              </li>
+            </draggable>
+            <draggable
+              class="components-content"
+              tag="ul"
+              v-show="typeComponts === 'forms' || typeComponts === 'tabs'"
+              v-bind="{
+                group: { name: 'forms', pull: 'clone', put: false },
+                sort: true,
+                ghostClass: 'ghost',
+              }"
+              :list="basicComponents"
+              @end="handleMoveEnd($event, 'source')"
+              @start="handleMoveStart"
+              :move="handleMove"
+            >
+              <li
+                class="components-item"
+                v-for="(item, index) in basicComponents"
+                :key="index"
+              >
+                {{ item.name }}
+              </li>
+            </draggable>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="16">
+        <div class="content-item edit-content">
+          <el-tabs v-model="activeType" @tab-click="editTabChange">
+            <el-tab-pane label="基本属性" name="meta" class="tabHeight">
+              <div class="form-title">窗口基本属性</div>
+              <meta-component />
+            </el-tab-pane>
+            <el-tab-pane label="Buttons区域" name="buttons">
+              <widget-button
+                ref="buttons"
+                :list="sys_button"
+                @buttonChange="buttonChange"
+                @delComPerties="delComPerties"
+              ></widget-button>
+            </el-tab-pane>
+            <el-tab-pane label="窗口主体区域" name="forms">
+              <widget-form
+                ref="widgetFormMain"
+                :list="mainItems"
+                @formChange="formChange"
+                @delComPerties="delComPerties"
+              ></widget-form>
+            </el-tab-pane>
+            <el-tab-pane label="Tabs区域" name="tabs">
+              <Tabs
+                :tabs="tabs"
+                @addTabs="addTabs"
+                @delTabs="delTabs"
+                @delComPerties="delComPerties"
+                @beforeTabs="beforeTabs"
+                @laterTabs="laterTabs"
+              ></Tabs>
+            </el-tab-pane>
+            <el-tab-pane
+              label="JSON区域"
+              name="jsonContent"
+              class="json-content"
+            >
+              <json-editor ref="jsonEditor" :jsonData="formData"></json-editor>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </el-col>
+      <el-col :span="5">
+        <div class="content-item attribute-content">
+          <attribute></attribute>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
+</template>
+
+<script>
+// import "../element";
+import Vue from "vue";
+import storeInfo from "./store/store";
+import { MessageBox, Message } from "element-ui";
+Vue.prototype.$elConfirm = MessageBox.confirm;
+Vue.prototype.$elMessage = Message;
+
+import "@/assets/reset.css";
+import JsonEditor from "./components/jsonEditor";
+import Draggable from "vuedraggable";
+import WidgetForm from "./components/draggable/WidgetForm";
+import WidgetButton from "./components/draggable/WidgetButton";
+import Attribute from "./components/attribute";
+import Tabs from "./components/Tabs.vue";
+import MetaComponent from "./components/meta.vue";
+
+import { basicComponents, buttons, formDataInit } from "./components/config.js";
+
+export default {
+  props: {
+    options: {
+      type: Object,
+      default() {
+        return {
+          sys_window: {
+            data:
+              '{"main":{"items":[[]],"meta":[{}]},"meta":{},"tabs":{"items":[],"meta":[]}}',
+          },
+          tabs: {
+            sys_button: [],
+          },
+        };
+      },
+    },
+  },
+  name: "crm-form-make",
+  components: {
+    JsonEditor,
+    WidgetForm,
+    WidgetButton,
+    Tabs,
+    MetaComponent,
+    Attribute,
+    Draggable,
+  },
+  watch: {
+    options(val) {
+      this.disOptions(val);
+    },
+    conProPertiesButtons: {
+      handler() {
+        this.saveComPerties();
+      },
+      immediate: false,
+      deep: true,
+    },
+    conProPertiesForm: {
+      handler() {
+        // this.$emit("saveComPerties");
+        this.saveComPerties();
+      },
+      immediate: false,
+      deep: true,
+    },
+    conProPertiesTabs: {
+      handler() {
+        this.saveComPerties();
+      },
+      immediate: false,
+      deep: true,
+    },
+  },
+  provide() {
+    return {
+      them: this,
+    };
+  },
+  data() {
+    return {
+      ...storeInfo,
+      basicComponents,
+      buttons,
+      activeType: "meta",
+      formData: {
+        sys_window: {
+          data: "",
+        },
+        tabs: {
+          sys_button: [],
+        },
+      },
+      sys_button: [],
+      sys_window: {
+        data: {
+          main: {
+            items: [],
+            meta: [{}],
+          },
+          meta: {},
+          tabs: {},
+        },
+      },
+      mainItems: [],
+      tabs: {
+        meta: [],
+        items: [],
+      },
+      configuration: {},
+      makeHeight: "722",
+      bpmArr: [],
+    };
+  },
+  computed: {},
+  created() {
+    this.disOptions(this.options);
+  },
+  mounted() {
+    this.setHeight();
+  },
+  methods: {
+    setHeight() {
+      let formMake = document.getElementById("formMake"),
+        tTop = 0;
+      while (formMake.offsetParent) {
+        tTop += formMake.offsetTop;
+        formMake = formMake.offsetParent;
+      }
+      this.makeHeight = document.documentElement.clientHeight - tTop;
+    },
+    // 切换主区域tab
+    editTabChange({ name }) {
+      this.showConfigurationProperties = "";
+      this.location = { type: "", value: "" };
+      this.typeComponts = name;
+      if (name == "jsonContent") {
+        this.makeJson();
+        this.$nextTick(() => {
+          this.$refs.jsonEditor.api("refresh");
+          this.$refs.jsonEditor.api("focus");
+        });
+      }
+    },
+    addTabs({ callBack }) {
+      this.tabs.meta.push({
+        title: "新增Tabs",
+      });
+      this.tabs.items.push([]);
+      callBack();
+    },
+    delTabs({ index, callBack }) {
+      let that = this;
+      const meta = that.tabs.meta;
+      if (meta.length === 0 || this.has(meta[index], "bpm")) {
+        that.$elMessage({
+          type: "error",
+          message: "tabs为空或无法删除!",
+        });
+        return;
+      }
+      that
+        .$elConfirm("此操作将永久删除该Tabs, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .then(() => {
+          that.tabs.meta.splice(index, 1);
+          that.tabs.items.splice(index, 1);
+          callBack();
+        });
+    },
+    beforeTabs({ index, callBack }) {
+      if (index != 0) {
+        this.tabs.meta = this.swapArray(this.tabs.meta, index, -1);
+        this.tabs.items = this.swapArray(this.tabs.items, index, -1);
+        callBack();
+      }
+    },
+    laterTabs({ index, callBack }) {
+      let len = this.tabs.meta.length;
+      if (index + 1 != len) {
+        this.tabs.meta = this.swapArray(this.tabs.meta, index, 1);
+        this.tabs.items = this.swapArray(this.tabs.items, index, 1);
+        callBack();
+      }
+    },
+    swapArray(arr, index, num) {
+      arr[index] = arr.splice(index + num, 1, arr[index])[0];
+      return arr;
+    },
+    saveComPerties() {
+      const { type, value } = this.location;
+      switch (type) {
+        case "buttons":
+          this.$set(
+            this.sys_button,
+            value,
+            this.copy(this.conProPertiesButtons)
+          );
+          break;
+        case "forms":
+          this.$set(this.mainItems, value, this.copy(this.conProPertiesForm));
+          break;
+        case "tabs":
+          this.$set(this.tabs.meta, value, this.copy(this.conProPertiesTabs));
+          break;
+        case "tabsForms":
+          this.$set(
+            this.tabs.items[value[0]],
+            value[1],
+            this.copy(this.conProPertiesForm)
+          );
+          break;
+      }
+    },
+    delComPerties() {
+      this.$elConfirm("此操作将永久删除该信息, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        const { type, value } = this.location;
+        switch (type) {
+          case "buttons":
+            this.sys_button.splice(value, 1);
+            break;
+          case "forms":
+            this.mainItems.splice(value, 1);
+            break;
+          case "tabsForms":
+            this.this.tabs.items[value[0]].splice(value[1], 1);
+            break;
+        }
+        this.$elMessage({
+          type: "success",
+          message: "删除成功!",
+        });
+      });
+    },
+    buttonChange(arr) {
+      this.sys_button = arr;
+    },
+    formChange({ dataList }) {
+      this.mainItems = dataList;
+    },
+    clearBr(key) {
+      if (!this.isString(key)) return key;
+      try {
+        key = key.replace(/\t+/g, "");
+        key = key.replace(/[\r\n]/g, "");
+        key = key.replace(/,\s*\}\s*\}/g, "}}");
+        key = key.replace(/,\s*\}\s*\]/g, "}]");
+        key = key.replace(/,\s*\]/g, "]");
+        key = key.replace(/,\s*\}\s*,\s*\{/g, "},{");
+        key = key.replace(/,\s*,/g, ",");
+      } catch (error) {
+        console.error(error);
+      }
+      return key;
+    },
+    //处理传输过来的数据
+    disOptions(obj) {
+      let _data = {};
+      if (obj.sys_window && obj.sys_window.id) {
+        _data = obj;
+        if (!obj.sys_window.data) {
+          _data.sys_window.data = formDataInit.sys_window.data;
+        }
+      } else {
+        _data = formDataInit;
+      }
+      this.sys_button = _data.tabs.sys_button;
+      this.sys_window = _data.sys_window;
+      let fdata = this.getBpm(_data.sys_window.data);
+      if (fdata.meta && fdata.meta.colpk && this.isArray(fdata.meta.colpk)) {
+        fdata.meta.colpk = fdata.meta.colpk.join(",");
+      }
+      this.sys_window.data = fdata;
+      this.mainItems = fdata.main.items[0];
+      this.tabs = fdata.tabs;
+    },
+    makeJson() {
+      let _formData = this.copy(this.formData);
+      _formData.sys_window = this.copy(this.sys_window);
+      _formData.tabs.sys_button = this.sys_button;
+      _formData.sys_window.data.main.items[0] = this.mainItems;
+      _formData.sys_window.data.tabs = this.tabs;
+      let fdata = _formData.sys_window.data;
+      if (fdata.meta && fdata.meta.colpk && this.isString(fdata.meta.colpk)) {
+        fdata.meta.colpk = fdata.meta.colpk.split(",");
+      }
+      _formData.sys_window.data = fdata;
+      this.formData = this.copy(_formData);
+    },
+    copy(source) {
+      return JSON.parse(JSON.stringify(source));
+    },
+    getJson(emit) {
+      let _json = {};
+      try {
+        if (this.typeComponts == "jsonContent") {
+          _json = this.copy(this.$refs.jsonEditor.getValue());
+          this.disOptions(_json);
+          this.formData = _json;
+        } else {
+          this.makeJson();
+          _json = this.formData;
+        }
+        _json.sys_window.data = this.setBpm(_json.sys_window.data);
+      } catch (error) {
+        console.error(error);
+      }
+      emit && this.$emit("getJson", _json);
+      return _json;
+    },
+    setBpm(data) {
+      if (!this.isObject(data)) return data;
+      let _data = JSON.stringify(data);
+      const reg = /\{"bpm":"\w+"\}/g;
+      try {
+        _data = _data.replace(reg, (param) => {
+          let { bpm } = JSON.parse(param);
+          return this.bpmArr[parseInt(bpm) - 1];
+        });
+      } catch (error) {
+        console.error(error);
+      }
+      return _data;
+    },
+    getBpm(data) {
+      if (this.isObject(data)) return data;
+      let _data = data,
+        reg = /\{\{\$\w+\}\}/g;
+      _data = this.clearBr(_data);
+      try {
+        _data = _data.replace(reg, (param) => {
+          this.bpmArr.push(param);
+          return `{"bpm":"${this.bpmArr.length}"}`;
+        });
+        _data = JSON.parse(_data);
+      } catch (error) {
+        this.$elMessage({
+          type: "error",
+          message: "json化失败，请处理",
+        });
+      }
+      return _data;
+    },
+    isArray(str) {
+      return Object.prototype.toString.call(str) === "[object Array]";
+    },
+    isObject(str) {
+      return Object.prototype.toString.call(str) === "[object Object]";
+    },
+    isString(str) {
+      return Object.prototype.toString.call(str) === "[object String]";
+    },
+    has(obj, key) {
+      return this.isObject(obj)
+        ? Object.prototype.hasOwnProperty.call(obj, key)
+        : false;
+    },
+    /*
+        拖拽处理
+    */
+    handleMoveEnd(evt, from) {
+      console.warn({
+        end: evt,
+        from: from,
+      });
+    },
+    handleMoveStart({ oldIndex }) {
+      console.warn("start", oldIndex);
+    },
+    handleMove() {
+      return true;
+    },
+  },
+};
+</script>
+<style lang="scss">
+.form-make {
+  position: relative;
+  min-width: 1200px;
+  .main-content {
+    .el-col {
+      height: 100%;
+      overflow: hidden;
+      .content-item {
+        padding: 10px;
+        // min-height: calc(100vh - 61px);
+        height: 100%;
+        .el-tabs {
+          height: 100%;
+        }
+        .el-tabs__content {
+          max-height: calc(100% - 70px);
+          overflow: auto;
+        }
+        .components-box {
+          max-height: calc(100% - 70px);
+          overflow: auto;
+        }
+      }
+      .components-wrap {
+        .components-title {
+          margin-top: 15px;
+          margin-bottom: 10px;
+          color: $blue;
+        }
+        .components-content {
+          display: flex;
+          flex-wrap: wrap;
+          .components-item {
+            margin: 1%;
+            width: 98%;
+            cursor: move;
+            user-select: none;
+            line-height: 30px;
+            text-align: center;
+            background: #f4f6fc;
+            border: 1px solid #f4f6fc;
+            &:hover {
+              color: #409eff;
+              border: 1px dashed #409eff;
+            }
+          }
+        }
+      }
+      .edit-content {
+        .form-title {
+          margin: 20px 0;
+          color: $blue;
+        }
+        .ghost {
+          overflow: hidden;
+          height: 0;
+          padding: 0;
+          background: #f56c6c;
+          border: 2px solid #f56c6c;
+          outline-width: 0;
+          font-size: 0;
+        }
+        .json-content {
+          .control-content {
+            margin-bottom: 10px;
+          }
+        }
+        .tabHeight {
+          height: 800px;
+          overflow: auto;
+        }
+      }
+      .attribute-content {
+        position: sticky;
+        top: 0;
+        .attribute-title {
+          margin-bottom: 20px;
+          color: $blue;
+        }
+        .el-select {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+</style>
