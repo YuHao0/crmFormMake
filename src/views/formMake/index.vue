@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="14">
                 <div class="content-item edit-content">
                     <el-tabs v-model="activeType" @tab-click="editTabChange">
                         <el-tab-pane label="基本属性" name="meta" class="tabHeight">
@@ -83,7 +83,7 @@
                     </el-tabs>
                 </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="6">
                 <div class="content-item attribute-content">
                     <attribute></attribute>
                 </div>
@@ -312,7 +312,7 @@ export default {
                         this.mainItems.splice(value, 1);
                         break;
                     case "tabsForms":
-                        this.this.tabs.items[value[0]].splice(value[1], 1);
+                        this.tabs.items[value[0]].splice(value[1], 1);
                         break;
                 }
                 this.$elMessage({

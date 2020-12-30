@@ -56,8 +56,11 @@
             <el-form-item label="写权限" prop="write_permission">
                 <el-input v-model="them.sys_window.write_permission"></el-input>
             </el-form-item>
+            <el-form-item label="BPM模版" prop="bmpModel">
+                <el-input v-model="them.sys_window.bmpModel"></el-input>
+            </el-form-item>
             <el-form-item label="导入配置" prop="import_config">
-                <el-input type="textarea" v-model="them.sys_window.import_config"></el-input>
+                <el-input type="textarea" :autosize="true" v-model="them.sys_window.import_config"></el-input>
             </el-form-item>
             <el-form-item>
                 <div class="noop-el"></div>
@@ -79,7 +82,7 @@
                     <el-option label="query_detail" value="query_detail"> </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="外键列(,隔开)" prop="colpk">
+            <el-form-item label="外键(多个用逗号隔开)" prop="colpk">
                 <el-input v-model="them.sys_window.data.meta.colpk" placeholder=""></el-input>
             </el-form-item>
             <el-form-item label="页面参数请求接口" prop="url">
@@ -109,14 +112,14 @@
             <el-form-item label="表单校验" prop="billcheck">
                 <el-input
                     type="textarea"
-                    resize="vertical"
+                    :autosize="true"
                     v-model="them.sys_window.data.main.meta[0].billcheck"
                 ></el-input>
             </el-form-item>
             <el-form-item label="表单更新触发器" prop="billtrigger">
                 <el-input
                     type="textarea"
-                    resize="vertical"
+                    :autosize="true"
                     v-model="them.sys_window.data.main.meta[0].billtrigger"
                 ></el-input>
             </el-form-item>
@@ -126,28 +129,28 @@
             <el-form-item label="禁止编辑2" prop="disable2">
                 <el-input
                     type="textarea"
-                    resize="vertical"
+                    :autosize="true"
                     v-model="them.sys_window.data.main.meta[0].disable2"
                 ></el-input>
             </el-form-item>
             <el-form-item label="下推表单sql" prop="sqldownpush">
                 <el-input
                     type="textarea"
-                    resize="vertical"
+                    :autosize="true"
                     v-model="them.sys_window.data.main.meta[0].sqldownpush"
                 ></el-input>
             </el-form-item>
             <el-form-item label="初始化sql" prop="sqlinit">
                 <el-input
                     type="textarea"
-                    resize="vertical"
+                    :autosize="true"
                     v-model="them.sys_window.data.main.meta[0].sqlinit"
                 ></el-input>
             </el-form-item>
             <el-form-item label="查询sql" prop="sqlselect">
                 <el-input
                     type="textarea"
-                    resize="vertical"
+                    :autosize="true"
                     v-model="them.sys_window.data.main.meta[0].sqlselect"
                 ></el-input>
             </el-form-item>

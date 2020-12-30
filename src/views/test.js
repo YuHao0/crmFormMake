@@ -1,3 +1,172 @@
+let res1 = {
+    "sys_window": {
+        "data": {
+            "main": {
+                "items": [
+                    [
+                        {
+                            "label": "需求Id",
+                            "uitype": "input",
+                            "type": "number",
+                            "id": "id",
+                            "disable": "1"
+                        },
+                        {
+                            "label": "提交人",
+                            "uitype": "input",
+                            "type": "string",
+                            "default": "$username",
+                            "disable": "1",
+                            "id": "submit_user"
+                        },
+                        {
+                            "label": "提交人Id",
+                            "uitype": "input",
+                            "id": "submit_userId",
+                            "type": "string",
+                            "visible": "0",
+                            "default": "$userid"
+                        },
+                        {
+                            "label": "优先级",
+                            "uitype": "select",
+                            "id": "priority",
+                            "type": "string",
+                            "lookup": "/sys/lookup/codes/priority_level"
+                        },
+                        {
+                            "label": "提交时间",
+                            "uitype": "datepicker",
+                            "id": "submit_time",
+                            "type": "date",
+                            "disable": "1"
+                        },
+                        {
+                            "label": "需求名称",
+                            "uitype": "input",
+                            "id": "demand_name",
+                            "type": "string"
+                        },
+                        {
+                            "label": "任务完成人",
+                            "uitype": "input",
+                            "regex": "task_complete_person",
+                            "id": "task_complete_person",
+                            "visible": "0",
+                            "type": "number"
+                        },
+                        {
+                            "label": "任务完成人",
+                            "uitype": "input",
+                            "id": "task_complete_person_name",
+                            "type": "string",
+                            "updatable": "0",
+                            "lookupwindow": "152"
+                        },
+                        {
+                            "label": "需求描述",
+                            "uitype": "textarea",
+                            "id": "demand_descript",
+                            "required": "1",
+                            "size": "large",
+                            "rows": "6",
+                            "type": "string"
+                        },
+                        {
+                            "label": "附件",
+                            "uitype": "upload",
+                            "id": "photo_url",
+                            "type": "string"
+                        }
+                    ]
+                ],
+                "meta": [
+                    {
+                        "title": "产品需求",
+                        "type": "form",
+                        "sqlselect": "SELECT\n\ta.*, fn_get_user_desc(a.task_complete_person) task_complete_person_name,fn_get_user_desc(a.submit_userId) user,\n        (select count(1) from story b where b.header_id = a.id)detail_count\nFROM\n\tfeature a\n where  a.id = {0}",
+                        "id": "feature",
+                        "sqlinit": ""
+                    }
+                ]
+            },
+            "meta": {
+                "name": "需求详情",
+                "uitype": "bill",
+                "colpk": [
+                    "id"
+                ],
+                "url": "sys/window/common_detail",
+                "busitype": "1"
+            },
+            "tabs": {
+                "meta": [
+                    {
+                        "title": "需求明细",
+                        "id": "story",
+                        "table": "",
+                        "type": "table",
+                        "sqlinit": "select * from story WHERE header_id = {0} AND delete_flag =0"
+                    },
+                    "{{$bpm_config_2item_items}}"
+                ],
+                "items": [
+                    [
+                        {
+                            "label": "id",
+                            "uitype": "input",
+                            "id": "id",
+                            "type": "string",
+                            "visible": "0"
+                        },
+                        {
+                            "label": "header_id",
+                            "uitype": "input",
+                            "id": "header_id",
+                            "type": "number",
+                            "visible": "0"
+                        },
+                        {
+                            "label": "需求明细",
+                            "uitype": "label",
+                            "id": "story_name",
+                            "visible": "",
+                            "type": "string"
+                        }
+                    ],
+                    "{{$bpm_config_2item_items}}"
+                ]
+            }
+        },
+        "code": "crm_feature_detail",
+        "name": "培训详情",
+        "template": "bill",
+        "data_source": "crm",
+        "audit_flag": "0",
+        "busi_type": "9",
+        "model_id": "12",
+        "hard_delete": "0"
+    },
+    "tabs": {
+        "sys_button": [
+            {
+                "name": "刷新",
+                "code": "refresh",
+                "event": "refresh",
+                "position_left": "1",
+                "rw_flag": "1"
+            },
+            {
+                "name": "修改",
+                "code": " modify",
+                "event": "modify",
+                "rw_flag": "1",
+                "position_left": "1"
+            }
+        ]
+    }
+}
+
 export default {
     meta: {
         name: "药店管理详情",
