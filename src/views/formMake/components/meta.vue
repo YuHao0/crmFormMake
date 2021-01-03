@@ -57,7 +57,7 @@
                 <el-input v-model="them.sys_window.write_permission"></el-input>
             </el-form-item>
             <el-form-item label="BPM模版" prop="bmpModel">
-                <el-input v-model="them.sys_window.bmpModel"></el-input>
+                <el-input v-model="them.sys_window.bmpModel" placeholder="{ { 模版名 } }"></el-input>
             </el-form-item>
             <el-form-item label="导入配置" prop="import_config">
                 <el-input type="textarea" :autosize="true" v-model="them.sys_window.import_config"></el-input>
@@ -100,14 +100,14 @@
         </div>
         <div class="form-title">窗口配置信息(data/main/meta[0])</div>
         <div class="meta-wrap">
+            <el-form-item label="id" prop="id">
+                <el-input v-model="them.sys_window.data.main.meta[0].id" placeholder="对象类型/表名"></el-input>
+            </el-form-item>
             <el-form-item label="标题" prop="title">
                 <el-input v-model="them.sys_window.data.main.meta[0].title"></el-input>
             </el-form-item>
             <el-form-item label="类型" prop="type">
                 <el-input v-model="them.sys_window.data.main.meta[0].type"></el-input>
-            </el-form-item>
-            <el-form-item label="id" prop="id">
-                <el-input v-model="them.sys_window.data.main.meta[0].id"></el-input>
             </el-form-item>
             <el-form-item label="表单校验" prop="billcheck">
                 <el-input

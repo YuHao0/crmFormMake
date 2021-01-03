@@ -1,4 +1,4 @@
-let res1 = {
+export let res = {
     "sys_window": {
         "data": {
             "main": {
@@ -106,7 +106,11 @@ let res1 = {
                         "id": "story",
                         "table": "",
                         "type": "table",
-                        "sqlinit": "select * from story WHERE header_id = {0} AND delete_flag =0"
+                        "sqlinit": "select * from story WHERE header_id = {0} AND delete_flag =0",
+                        "colfk": [
+                            "header_id"
+                        ],
+                        "autodeleteby": "story_name"
                     },
                     "{{$bpm_config_2item_items}}"
                 ],

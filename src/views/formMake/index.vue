@@ -111,6 +111,8 @@ import MetaComponent from "./components/meta.vue";
 
 import { basicComponents, buttons, formDataInit } from "./components/config.js";
 
+import { res as testData } from "../test";
+
 export default {
     props: {
         options: {
@@ -206,7 +208,10 @@ export default {
     },
     computed: {},
     created() {
-        this.disOptions(this.options);
+        console.log(testData);
+        testData.sys_window.data = JSON.stringify(testData.sys_window.data);
+        this.disOptions(testData);
+        // this.disOptions(this.options);
     },
     mounted() {
         this.setHeight();
@@ -345,7 +350,7 @@ export default {
         //处理传输过来的数据
         disOptions(obj) {
             let _data = {};
-            if (obj.sys_window && obj.sys_window.id) {
+            if (obj.sys_window) {
                 _data = obj;
                 if (!obj.sys_window.data) {
                     _data.sys_window.data = formDataInit.sys_window.data;
@@ -353,15 +358,34 @@ export default {
             } else {
                 _data = formDataInit;
             }
-            this.sys_button = _data.tabs.sys_button;
-            this.sys_window = _data.sys_window;
             let fdata = this.getBpm(_data.sys_window.data);
             if (fdata.meta && fdata.meta.colpk && this.isArray(fdata.meta.colpk)) {
                 fdata.meta.colpk = fdata.meta.colpk.join(",");
             }
+            // 处理bpm
+            let reg = /\{\{\$\w+\}\}/g;
+            let bpmKey = -1;
+            let bpmValue = "";
+            fdata.tabs.meta.forEach((item, index) => {
+                if (this.is.string(item) && reg.test(item)) {
+                    bpmKey = index;
+                    bpmValue = item;
+                }
+                if (this.is.object(item)) {
+                    if (item.colfk) item.colfk = item.colfk.toString();
+                }
+            });
+            if (fdata.tabs.items[bpmKey] == bpmValue) {
+                _data.sys_window.bmpModel = bpmValue;
+                fdata.tabs.meta.splice(bpmKey, 1);
+                fdata.tabs.items.splice(bpmKey, 1);
+            }
+            // 解析传入配置
+            this.sys_window = _data.sys_window;
             this.sys_window.data = fdata;
             this.mainItems = fdata.main.items[0];
             this.tabs = fdata.tabs;
+            this.sys_button = _data.tabs.sys_button;
         },
         makeJson() {
             let _formData = this.copy(this.formData);
@@ -370,6 +394,18 @@ export default {
             _formData.sys_window.data.main.items[0] = this.mainItems;
             _formData.sys_window.data.tabs = this.tabs;
             let fdata = _formData.sys_window.data;
+            fdata.tabs.meta.forEach(item => {
+                if (this.is.string(item.colfk)) {
+                    item.colfk = item.colfk.split(",");
+                }
+            });
+            if (_formData.sys_window.bmpModel) {
+                !fdata.tabs.meta.includes(_formData.sys_window.bmpModel) &&
+                    fdata.tabs.meta.push(_formData.sys_window.bmpModel);
+                !fdata.tabs.items.includes(_formData.sys_window.bmpModel) &&
+                    fdata.tabs.items.push(_formData.sys_window.bmpModel);
+                delete _formData.sys_window.bmpModel;
+            }
             if (fdata.meta && fdata.meta.colpk && this.isString(fdata.meta.colpk)) {
                 fdata.meta.colpk = fdata.meta.colpk.split(",");
             }
@@ -394,18 +430,24 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+            console.log(_json);
+            _json.win_id = 2;
+            this.api.common.detail(_json).then(res => {
+                console.log(res);
+                this.$elMessage({
+                    type: "success",
+                    message: "保存成功!"
+                });
+            });
             emit && this.$emit("getJson", _json);
             return _json;
         },
         setBpm(data) {
             if (!this.isObject(data)) return data;
             let _data = JSON.stringify(data);
-            const reg = /\{"bpm":"\w+"\}/g;
+            const reg = /"(\{\{\$\w+\}\})"/g;
             try {
-                _data = _data.replace(reg, param => {
-                    let { bpm } = JSON.parse(param);
-                    return this.bpmArr[parseInt(bpm) - 1];
-                });
+                _data = _data.replace(reg, "$1");
             } catch (error) {
                 console.error(error);
             }
@@ -413,20 +455,24 @@ export default {
         },
         getBpm(data) {
             if (this.isObject(data)) return data;
-            let _data = data,
-                reg = /\{\{\$\w+\}\}/g;
-            _data = this.clearBr(_data);
+            let _data = data;
             try {
-                _data = _data.replace(reg, param => {
-                    this.bpmArr.push(param);
-                    return `{"bpm":"${this.bpmArr.length}"}`;
-                });
-                _data = JSON.parse(_data);
-            } catch (error) {
-                this.$elMessage({
-                    type: "error",
-                    message: "json化失败，请处理"
-                });
+                return JSON.parse(data);
+            } catch (e) {
+                let reg = /\{\{\$\w+\}\}/g;
+                _data = this.clearBr(_data);
+                try {
+                    _data = _data.replace(reg, param => {
+                        this.bpmArr.push(param);
+                        return `"{{${param}}}"`;
+                    });
+                    _data = JSON.parse(_data);
+                } catch (error) {
+                    this.$elMessage({
+                        type: "error",
+                        message: "json化失败，请处理"
+                    });
+                }
             }
             return _data;
         },
@@ -463,7 +509,7 @@ export default {
 <style lang="scss">
 .form-make {
     position: relative;
-    min-width: 1200px;
+    min-width: 1400px;
     .main-content {
         .el-col {
             height: 100%;

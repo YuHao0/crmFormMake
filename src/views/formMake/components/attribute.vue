@@ -2,15 +2,13 @@
     <div class="forms">
         <el-form ref="form" v-show="them.showConfigurationProperties === 'forms'">
             <el-form-item label="字段名称">
-                <el-input v-model="them.conProPertiesForm.id"></el-input>
+                <el-input v-model="them.conProPertiesForm.id" placeholder="id"></el-input>
             </el-form-item>
             <el-form-item label="标签名称">
-                <el-input v-model="them.conProPertiesForm.label"></el-input>
+                <el-input v-model="them.conProPertiesForm.label" placeholder="label"></el-input>
             </el-form-item>
             <el-form-item label="ui类型">
-                <!-- <el-input v-model="them.conProPertiesForm.uitype"></el-input> -->
-                <!-- {{ getUiType }} -->
-                <el-select v-model="them.conProPertiesForm.uitype" placeholder="请选择ui类型">
+                <el-select v-model="them.conProPertiesForm.uitype" placeholder="请选择uitype">
                     <el-option v-for="item in getUiType" :label="item.label" :value="item.value" :key="item.value">
                     </el-option>
                 </el-select>
@@ -24,28 +22,22 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="是否更新">
-                <el-select v-model="them.conProPertiesForm.updatable" placeholder="请选择（默认更新）">
+                <el-select v-model="them.conProPertiesForm.updatable" placeholder="（默认更新）">
                     <el-option label="不更新" value="0"> </el-option>
                     <el-option label="更新" value="1"> </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item v-show="showModule('placeholder', them.conProPertiesForm.uitype)" label="提示输入内容">
-                <el-input v-model="them.conProPertiesForm.placeholder"></el-input>
+                <el-input v-model="them.conProPertiesForm.placeholder" placeholder="placeholder"></el-input>
             </el-form-item>
-            <el-form-item
-                label="是否可编辑
-             (可写表达式)(0可编辑 1不可编辑)"
-            >
+            <el-form-item label="是否可编辑">
                 <el-input v-model="them.conProPertiesForm.disable" placeholder="0可编辑 1不可编辑"></el-input>
             </el-form-item>
-            <el-form-item
-                label="是否可见
-            (可写表达式)(0不显示 1显示)"
-            >
+            <el-form-item label="是否可见(可写表达式)">
                 <el-input v-model="them.conProPertiesForm.visible" placeholder="0不显示 1显示"></el-input>
             </el-form-item>
             <el-form-item label="校验输入内容(正则)">
-                <el-input v-model="them.conProPertiesForm.regex"></el-input>
+                <el-input v-model="them.conProPertiesForm.regex" placeholder="regex"></el-input>
             </el-form-item>
             <el-form-item v-show="showModule('lookup', them.conProPertiesForm.uitype)" label="URI链接">
                 <el-input v-model="them.conProPertiesForm.lookup"></el-input>
@@ -54,12 +46,12 @@
                 <el-input v-model="them.conProPertiesForm.options" placeholder="给label/value list值"></el-input>
             </el-form-item>
             <el-form-item label="初始传参">
-                <el-input v-model="them.conProPertiesForm.startwith"></el-input>
+                <el-input v-model="them.conProPertiesForm.startwith" placeholder="startwith"></el-input>
             </el-form-item>
             <el-form-item v-show="showModule('limit', them.conProPertiesForm.uitype)" label="限制行数">
                 <el-input v-model="them.conProPertiesForm.limit"></el-input>
             </el-form-item>
-            <el-form-item label="是否必填(可写表达式)(0不限制 1限制)">
+            <el-form-item label="是否必填(可写表达式)">
                 <el-input v-model="them.conProPertiesForm.required" placeholder="0不限制 1限制"></el-input>
             </el-form-item>
             <el-form-item label="尺寸">
@@ -73,7 +65,7 @@
                 <el-input v-model="them.conProPertiesForm.rows" placeholder="用于定义高度"></el-input>
             </el-form-item>
             <el-form-item label="字数限制">
-                <el-input v-model="them.conProPertiesForm.maxlength"></el-input>
+                <el-input v-model="them.conProPertiesForm.maxlength" placeholder="maxlength"></el-input>
             </el-form-item>
             <el-form-item v-show="showModule('separater', them.conProPertiesForm.uitype)" label="显示间隔标识符">
                 <el-input v-model="them.conProPertiesForm.separater" placeholder="默认逗号,"></el-input>
@@ -85,10 +77,10 @@
                 <el-input v-model="them.conProPertiesForm.format" placeholder="例如时间 YYYY-mm-dd"></el-input>
             </el-form-item>
             <el-form-item label="默认值">
-                <el-input v-model="them.conProPertiesForm.default"></el-input>
+                <el-input v-model="them.conProPertiesForm.default" placeholder="default"></el-input>
             </el-form-item>
             <el-form-item label="强制默认值">
-                <el-input v-model="them.conProPertiesForm.detailDefault"></el-input>
+                <el-input v-model="them.conProPertiesForm.detailDefault" placeholder="detailDefault"></el-input>
             </el-form-item>
             <el-form-item label="自动计算">
                 <el-input v-model="them.conProPertiesForm.compute" placeholder="设置jsonpath表达式"></el-input>
@@ -96,16 +88,16 @@
             <el-form-item label="查找带回窗口">
                 <el-input v-model="them.conProPertiesForm.lookupwindow" placeholder="窗口ID"></el-input>
             </el-form-item>
-            <el-form-item v-show="showModule('param', them.conProPertiesForm.uitype)" label="查找窗口带参传递">
+            <el-form-item v-show="them.conProPertiesForm.lookupwindow" label="查找窗口带参传递">
                 <el-input v-model="them.conProPertiesForm.param" placeholder="参数"></el-input>
             </el-form-item>
-            <el-form-item v-show="showModule('lookupcolumn', them.conProPertiesForm.uitype)" label="找带回数据源列">
+            <el-form-item v-show="them.conProPertiesForm.lookupwindow" label="找带回数据源列">
                 <el-input
                     v-model="them.conProPertiesForm.lookupcolumn"
                     placeholder="逗号分隔如 id,name,type"
                 ></el-input>
             </el-form-item>
-            <el-form-item v-show="showModule('returnback', them.conProPertiesForm.uitype)" label="查找带回目标列">
+            <el-form-item v-show="them.conProPertiesForm.lookupwindow" label="查找带回目标列">
                 <el-input
                     v-model="them.conProPertiesForm.returnback"
                     placeholder="逗号分隔如seller_id,seller_name,seller_type"
@@ -135,7 +127,7 @@
             <el-form-item v-show="showModule('step', them.conProPertiesForm.uitype)" label="numberpicker步长">
                 <el-input v-model="them.conProPertiesForm.step" placeholder="专用于配合editable属性"></el-input>
             </el-form-item>
-            <el-form-item label="是否只读(可写表达式)(0只读 1不限制)">
+            <el-form-item label="是否只读(可写表达式)">
                 <el-input v-model="them.conProPertiesForm.readonly" placeholder="0只读 1不限制"></el-input>
             </el-form-item>
             <el-form-item label="修改后重置">
@@ -250,7 +242,10 @@
         </el-form>
         <el-form ref="buttons" v-show="them.showConfigurationProperties === 'buttons'">
             <el-form-item label="按钮id">
-                <el-input v-model="them.conProPertiesButtons.id" :disabled="true" placeholder="按钮id"></el-input>
+                <el-input v-model="them.conProPertiesButtons.id" readonly placeholder="按钮id"></el-input>
+            </el-form-item>
+            <el-form-item label="按钮名字">
+                <el-input v-model="them.conProPertiesButtons.name" placeholder="做为按钮标签显示"></el-input>
             </el-form-item>
             <el-form-item label="按钮编码">
                 <el-input v-model="them.conProPertiesButtons.code" placeholder="前端根据code"></el-input>
@@ -258,10 +253,7 @@
             <el-form-item label="按钮事件">
                 <el-input v-model="them.conProPertiesButtons.event" placeholder="按钮事件，用于传递接口"></el-input>
             </el-form-item>
-            <el-form-item label="按钮名字">
-                <el-input v-model="them.conProPertiesButtons.name" placeholder="做为按钮标签显示"></el-input>
-            </el-form-item>
-            <el-form-item label="模式">
+            <el-form-item label="读写模式">
                 <el-select v-model="them.conProPertiesButtons.rw_flag" placeholder="请选择">
                     <el-option label="读" value="1"> </el-option>
                     <el-option label="写" value="2"> </el-option>
@@ -342,13 +334,13 @@ export default {
                 cascaderLength: "cascader",
                 limit: "inner_table",
                 uicontent: "inner_table",
-                param: "lookupwindow",
-                lookupcolumn: "lookupwindow",
-                returnback: "lookupwindow",
                 step: "editable"
             }
         };
     },
+    // watch:{
+    //     "them.conProPertiesForm"
+    // }
     methods: {
         showModule(moduleType, uiType = "input") {
             return this.showInfo[moduleType].indexOf(uiType) > -1;
@@ -361,5 +353,14 @@ export default {
 .forms {
     height: 100%;
     overflow: auto;
+    ::v-deep .el-form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        .el-form-item {
+            width: 48%;
+        }
+    }
 }
 </style>

@@ -76,7 +76,7 @@ const basicComponents = [
 
 const buttons = [
   {
-    name: "新建按钮",
+    name: "按钮",
   },
 ];
 
