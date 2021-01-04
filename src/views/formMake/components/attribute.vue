@@ -1,5 +1,6 @@
 <template>
     <div class="forms">
+        <el-link type="primary" v-show="!them.showConfigurationProperties">属性编辑区域</el-link>
         <el-form ref="form" v-show="them.showConfigurationProperties === 'forms'">
             <el-form-item label="字段名称">
                 <el-input v-model="them.conProPertiesForm.id" placeholder="id"></el-input>
@@ -242,7 +243,7 @@
         </el-form>
         <el-form ref="buttons" v-show="them.showConfigurationProperties === 'buttons'">
             <el-form-item label="按钮id">
-                <el-input v-model="them.conProPertiesButtons.id" readonly placeholder="按钮id"></el-input>
+                <el-input v-model="them.conProPertiesButtons.id" readonly placeholder="只读"></el-input>
             </el-form-item>
             <el-form-item label="按钮名字">
                 <el-input v-model="them.conProPertiesButtons.name" placeholder="做为按钮标签显示"></el-input>

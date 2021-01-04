@@ -23,6 +23,7 @@ import {
   Cascader,
   Upload,
   Icon,
+  Link,
   Progress,
   // MessageBox,
   // Message
@@ -52,6 +53,7 @@ Vue.use(Cascader);
 Vue.use(Upload);
 Vue.use(Icon);
 Vue.use(Progress);
+Vue.use(Link);
 
 // Vue.prototype.$loading = Loading.service;
 // Vue.prototype.$msgbox = MessageBox;

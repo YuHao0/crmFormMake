@@ -133,32 +133,36 @@
                     v-model="them.sys_window.data.main.meta[0].disable2"
                 ></el-input>
             </el-form-item>
+            <el-form-item>
+                <div class="noop-el"></div>
+            </el-form-item>
+            <el-form-item>
+                <div class="noop-el"></div>
+            </el-form-item>
+        </div>
+        <div class="large-item meta-wrap">
             <el-form-item label="下推表单sql" prop="sqldownpush">
                 <el-input
                     type="textarea"
-                    :autosize="true"
+                    :autosize="{ minRows: 4 }"
+                    :rows="5"
                     v-model="them.sys_window.data.main.meta[0].sqldownpush"
                 ></el-input>
             </el-form-item>
             <el-form-item label="初始化sql" prop="sqlinit">
                 <el-input
                     type="textarea"
-                    :autosize="true"
+                    :autosize="{ minRows: 4 }"
+                    :rows="5"
                     v-model="them.sys_window.data.main.meta[0].sqlinit"
                 ></el-input>
             </el-form-item>
             <el-form-item label="查询sql" prop="sqlselect">
                 <el-input
                     type="textarea"
-                    :autosize="true"
+                    :autosize="{ minRows: 4 }"
                     v-model="them.sys_window.data.main.meta[0].sqlselect"
                 ></el-input>
-            </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
-            </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
             </el-form-item>
         </div>
     </el-form>
@@ -199,6 +203,11 @@ export default {
             flex-direction: row-reverse;
             min-height: 40px;
             line-height: 1;
+        }
+        &.large-item {
+            .el-textarea {
+                width: 700px;
+            }
         }
     }
 }
