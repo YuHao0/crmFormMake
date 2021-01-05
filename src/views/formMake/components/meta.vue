@@ -7,19 +7,26 @@
         label-position="right"
         label-width="80px"
     >
-        <div class="form-title">窗口基本属性</div>
+        <div class="form-title">window窗口对象</div>
         <div class="meta-wrap">
             <el-form-item label="编码" prop="code">
                 <el-input v-model="them.sys_window.code"></el-input>
             </el-form-item>
             <el-form-item label="名称" prop="name">
-                <el-input v-model="them.sys_window.name"></el-input>
+                <el-input
+                    v-model="them.sys_window.name"
+                    @change="them.sys_window.data.meta.name = them.sys_window.name"
+                ></el-input>
             </el-form-item>
             <el-form-item label="图标" prop="icon">
                 <el-input v-model="them.sys_window.icon"></el-input>
             </el-form-item>
             <el-form-item label="渲染模板" prop="template">
-                <el-select v-model="them.sys_window.template" placeholder="请选择">
+                <el-select
+                    v-model="them.sys_window.template"
+                    @change="them.sys_window.data.meta.uitype = them.sys_window.template"
+                    placeholder="请选择"
+                >
                     <el-option label="query_list" value="query_list"> </el-option>
                     <el-option label="bill" value="bill"> </el-option>
                     <el-option label="tree_query_list" value="tree_query_list"> </el-option>
@@ -56,6 +63,9 @@
             <el-form-item label="写权限" prop="write_permission">
                 <el-input v-model="them.sys_window.write_permission"></el-input>
             </el-form-item>
+            <el-form-item label="页面参数请求接口" prop="url">
+                <el-input v-model="them.sys_window.data.meta.url"></el-input>
+            </el-form-item>
             <el-form-item label="BPM模版" prop="bmpModel">
                 <el-input v-model="them.sys_window.bmpModel" placeholder="{ { 模版名 } }"></el-input>
             </el-form-item>
@@ -69,7 +79,7 @@
                 <div class="noop-el"></div>
             </el-form-item>
         </div>
-        <div class="form-title">窗口配置详情信息(data/meta)</div>
+        <!-- <div class="form-title">窗口配置详情信息(data/meta)</div>
         <div class="meta-wrap">
             <el-form-item label="窗口名" prop="name">
                 <el-input v-model="them.sys_window.data.meta.name"></el-input>
@@ -88,17 +98,11 @@
             <el-form-item label="页面参数请求接口" prop="url">
                 <el-input v-model="them.sys_window.data.meta.url"></el-input>
             </el-form-item>
-            <el-form-item label="公共类型" prop="busitype">
-                <el-input v-model="them.sys_window.data.meta.busitype"></el-input>
-            </el-form-item>
             <el-form-item>
                 <div class="noop-el"></div>
             </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
-            </el-form-item>
-        </div>
-        <div class="form-title">窗口配置信息(data/main/meta[0])</div>
+        </div> -->
+        <div class="form-title">属性配置(data/main/meta[0])</div>
         <div class="meta-wrap">
             <el-form-item label="id" prop="id">
                 <el-input v-model="them.sys_window.data.main.meta[0].id" placeholder="对象类型/表名"></el-input>
@@ -106,32 +110,17 @@
             <el-form-item label="标题" prop="title">
                 <el-input v-model="them.sys_window.data.main.meta[0].title"></el-input>
             </el-form-item>
+            <el-form-item label="表名" prop="table">
+                <el-input
+                    v-model="them.sys_window.data.main.meta[0].table"
+                    placeholder="查询与更新所引用的表名，该属性会优先覆盖id"
+                ></el-input>
+            </el-form-item>
             <el-form-item label="类型" prop="type">
                 <el-input v-model="them.sys_window.data.main.meta[0].type"></el-input>
             </el-form-item>
-            <el-form-item label="表单校验" prop="billcheck">
-                <el-input
-                    type="textarea"
-                    :autosize="true"
-                    v-model="them.sys_window.data.main.meta[0].billcheck"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="表单更新触发器" prop="billtrigger">
-                <el-input
-                    type="textarea"
-                    :autosize="true"
-                    v-model="them.sys_window.data.main.meta[0].billtrigger"
-                ></el-input>
-            </el-form-item>
             <el-form-item label="禁止编辑" prop="disable">
                 <el-input v-model="them.sys_window.data.main.meta[0].disable"></el-input>
-            </el-form-item>
-            <el-form-item label="禁止编辑2" prop="disable2">
-                <el-input
-                    type="textarea"
-                    :autosize="true"
-                    v-model="them.sys_window.data.main.meta[0].disable2"
-                ></el-input>
             </el-form-item>
             <el-form-item>
                 <div class="noop-el"></div>
@@ -140,28 +129,58 @@
                 <div class="noop-el"></div>
             </el-form-item>
         </div>
+        <div class="form-title">sql配置(data/main/meta[0])</div>
         <div class="large-item meta-wrap">
-            <el-form-item label="下推表单sql" prop="sqldownpush">
-                <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 4 }"
-                    :rows="5"
-                    v-model="them.sys_window.data.main.meta[0].sqldownpush"
-                ></el-input>
-            </el-form-item>
             <el-form-item label="初始化sql" prop="sqlinit">
                 <el-input
                     type="textarea"
                     :autosize="{ minRows: 4 }"
                     :rows="5"
+                    placeholder="sqlinit"
                     v-model="them.sys_window.data.main.meta[0].sqlinit"
                 ></el-input>
             </el-form-item>
             <el-form-item label="查询sql" prop="sqlselect">
                 <el-input
                     type="textarea"
+                    placeholder="sqlselect"
                     :autosize="{ minRows: 4 }"
                     v-model="them.sys_window.data.main.meta[0].sqlselect"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="标量sql" prop="sqlscalar">
+                <el-input
+                    type="textarea"
+                    placeholder="sqlscalar"
+                    :autosize="{ minRows: 4 }"
+                    v-model="them.sys_window.data.main.meta[0].sqlscalar"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="下推表单sql" prop="sqldownpush">
+                <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 4 }"
+                    :rows="5"
+                    placeholder="sqldownpush"
+                    v-model="them.sys_window.data.main.meta[0].sqldownpush"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="表单校验" prop="billcheck">
+                <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 4 }"
+                    :rows="5"
+                    placeholder="billcheck"
+                    v-model="them.sys_window.data.main.meta[0].billcheck"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="表单更新触发器" prop="billtrigger">
+                <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 4 }"
+                    :rows="5"
+                    placeholder="billtrigger"
+                    v-model="them.sys_window.data.main.meta[0].billtrigger"
                 ></el-input>
             </el-form-item>
         </div>

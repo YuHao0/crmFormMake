@@ -78,7 +78,7 @@
                 <el-input v-model="them.conProPertiesForm.cascaderLength"></el-input>
             </el-form-item>
             <el-form-item label="是否折叠">
-                <el-select v-model="them.conProPertiesForm.foldFlag" placeholder="请选择)">
+                <el-select v-model="them.conProPertiesForm.foldFlag" placeholder="请选择">
                     <el-option label="不折叠" value="0"> </el-option>
                     <el-option label="折叠" value="1"> </el-option>
                 </el-select>
