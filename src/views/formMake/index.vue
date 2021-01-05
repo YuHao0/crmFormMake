@@ -111,8 +111,6 @@ import MetaComponent from "./components/meta.vue";
 
 import { basicComponents, buttons, formDataInit } from "./components/config.js";
 
-import { res as testData } from "../test";
-
 export default {
     props: {
         options: {
@@ -208,9 +206,7 @@ export default {
     },
     computed: {},
     created() {
-        testData.sys_window.data = JSON.stringify(testData.sys_window.data);
-        this.disOptions(testData);
-        // this.disOptions(this.options);
+        this.disOptions(this.options);
     },
     mounted() {
         this.setHeight();
