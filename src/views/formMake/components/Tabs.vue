@@ -83,12 +83,6 @@ export default {
                 value: this.tabIndex
             };
             this.them.conProPertiesTabs = assign(this.meta[index]);
-            //   this.$store.commit("setShowConfigurationProperties", "tabs");
-            //   this.$store.commit("setLocation", {
-            //     type: "tabs",
-            //     value: this.tabIndex,
-            //   });
-            //   this.$store.commit("setConProPertiesTabs", this.meta[index]);
         },
         addTabs() {
             let that = this;
@@ -105,7 +99,6 @@ export default {
             that.$emit("delTabs", {
                 index: that.tabIndex,
                 callBack() {
-                    //   that.$store.commit("setShowConfigurationProperties", "");
                     that.them.showConfigurationProperties = "";
                     if (that.tabIndex > 0) {
                         that.activeType = `pane${that.tabIndex - 1}`;

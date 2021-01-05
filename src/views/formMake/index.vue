@@ -3,7 +3,7 @@
         <el-row class="main-content" :style="{ height: '100%', overflow: 'auto' }">
             <el-col :span="4">
                 <div class="content-item components-wrap">
-                    <el-button @click="getJson(true)">保存配置</el-button>
+                    <el-button @click="getJson('emit')">保存配置</el-button>
                     <div class="components-title">选择组件</div>
                     <div class="components-box">
                         <draggable
@@ -208,7 +208,6 @@ export default {
     },
     computed: {},
     created() {
-        console.log(testData);
         testData.sys_window.data = JSON.stringify(testData.sys_window.data);
         this.disOptions(testData);
         // this.disOptions(this.options);
@@ -230,14 +229,19 @@ export default {
         editTabChange({ name }) {
             this.showConfigurationProperties = "";
             this.location = { type: "", value: "" };
-            this.typeComponts = name;
             if (name == "jsonContent") {
+                // 进入jons编辑器
                 this.makeJson();
                 this.$nextTick(() => {
                     this.$refs.jsonEditor.api("refresh");
                     this.$refs.jsonEditor.api("focus");
                 });
+            } else if (this.typeComponts == "jsonContent") {
+                // 离开jons编辑器
+                let _json = this.copy(this.$refs.jsonEditor.getValue());
+                this.disOptions(_json);
             }
+            this.typeComponts = name;
         },
         addTabs({ callBack }) {
             this.tabs.meta.push({
@@ -347,18 +351,20 @@ export default {
             }
             return key;
         },
-        //处理传输过来的数据
         disOptions(obj) {
+            //处理传输过来的数据
             let _data = {};
             if (obj.sys_window) {
                 _data = obj;
                 if (!obj.sys_window.data) {
+                    // 默认ui内容json数据结构
                     _data.sys_window.data = formDataInit.sys_window.data;
                 }
             } else {
                 _data = formDataInit;
             }
-            let fdata = this.getBpm(_data.sys_window.data);
+            // 处理ui内容json数据
+            let fdata = this.parseData(_data.sys_window.data);
             if (fdata.meta && fdata.meta.colpk && this.isArray(fdata.meta.colpk)) {
                 fdata.meta.colpk = fdata.meta.colpk.join(",");
             }
@@ -366,6 +372,7 @@ export default {
             let reg = /\{\{\$\w+\}\}/g;
             let bpmKey = -1;
             let bpmValue = "";
+            // tabs下meta中bpm模版
             fdata.tabs.meta.forEach((item, index) => {
                 if (this.is.string(item) && reg.test(item)) {
                     bpmKey = index;
@@ -375,6 +382,7 @@ export default {
                     if (item.colfk) item.colfk = item.colfk.toString();
                 }
             });
+            // 判断meta下的bgm模版是否与items下对应
             if (fdata.tabs.items[bpmKey] == bpmValue) {
                 _data.sys_window.bmpModel = bpmValue;
                 fdata.tabs.meta.splice(bpmKey, 1);
@@ -388,6 +396,7 @@ export default {
             this.sys_button = _data.tabs.sys_button;
         },
         makeJson() {
+            // 整合多个区域属性
             let _formData = this.copy(this.formData);
             _formData.sys_window = this.copy(this.sys_window);
             _formData.tabs.sys_button = this.sys_button;
@@ -420,29 +429,29 @@ export default {
             try {
                 if (this.typeComponts == "jsonContent") {
                     _json = this.copy(this.$refs.jsonEditor.getValue());
-                    this.disOptions(_json);
                     this.formData = _json;
                 } else {
                     this.makeJson();
                     _json = this.formData;
                 }
-                _json.sys_window.data = this.setBpm(_json.sys_window.data);
+                _json.sys_window.data = this.dealData(_json.sys_window.data);
             } catch (error) {
                 console.error(error);
             }
-            console.log(_json);
             _json.win_id = 2;
-            this.api.common.detail(_json).then(res => {
-                console.log(res);
-                this.$elMessage({
-                    type: "success",
-                    message: "保存成功!"
+            emit == "save" &&
+                this.api.common.detail(_json).then(res => {
+                    console.log(res);
+                    this.$elMessage({
+                        type: "success",
+                        message: "保存成功!"
+                    });
                 });
-            });
-            emit && this.$emit("getJson", _json);
+            emit == "emit" && this.$emit("getJson", _json);
             return _json;
         },
-        setBpm(data) {
+        dealData(data) {
+            // 处理最终json中特殊属性
             if (!this.isObject(data)) return data;
             let _data = JSON.stringify(data);
             const reg = /"(\{\{\$\w+\}\})"/g;
@@ -453,16 +462,17 @@ export default {
             }
             return _data;
         },
-        getBpm(data) {
+        parseData(data) {
+            // 解析传入json中特殊属性
             if (this.isObject(data)) return data;
             let _data = data;
             try {
                 return JSON.parse(data);
             } catch (e) {
-                let reg = /\{\{\$\w+\}\}/g;
+                let modelReg = /\{\{\$\w+\}\}/g;
                 _data = this.clearBr(_data);
                 try {
-                    _data = _data.replace(reg, param => {
+                    _data = _data.replace(modelReg, param => {
                         this.bpmArr.push(param);
                         return `"{{${param}}}"`;
                     });
