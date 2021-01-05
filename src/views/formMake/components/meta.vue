@@ -205,8 +205,11 @@ export default {
             line-height: 1;
         }
         &.large-item {
+            .el-form-item {
+                width: 100%;
+            }
             .el-textarea {
-                width: 700px;
+                width: 100%;
             }
         }
     }
