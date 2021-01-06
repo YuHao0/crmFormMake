@@ -108,6 +108,11 @@ import WidgetButton from "./components/draggable/WidgetButton";
 import Attribute from "./components/attribute";
 import Tabs from "./components/Tabs.vue";
 import MetaComponent from "./components/meta.vue";
+import core from "@/core";
+
+for (let key in core) {
+    Vue.prototype[key] = core[key];
+}
 
 import { basicComponents, buttons, formDataInit } from "./components/config.js";
 
@@ -470,7 +475,7 @@ export default {
                 try {
                     _data = _data.replace(modelReg, param => {
                         this.bpmArr.push(param);
-                        return `"{{${param}}}"`;
+                        return `"${param}"`;
                     });
                     _data = JSON.parse(_data);
                 } catch (error) {
