@@ -3,13 +3,16 @@
         <el-row class="main-content" :style="{ height: '100%', overflow: 'auto' }">
             <el-col :span="4">
                 <div class="content-item components-wrap">
-                    <el-button @click="getJson('emit')">保存配置</el-button>
-                    <div class="components-title">选择组件</div>
+                    <el-button class="save-control" type="primary" @click="getJson('emit')">保存配置</el-button>
+                    <div class="components-title">
+                        <span class="el-icon-arrow-left"></span>
+                        组件库
+                    </div>
                     <div class="components-box">
+                        <div class="components-type">顶部区域</div>
                         <draggable
                             class="components-content"
                             tag="ul"
-                            v-show="typeComponts === 'buttons'"
                             v-bind="{
                                 group: { name: 'buttons', pull: 'clone', put: false },
                                 sort: true,
@@ -24,10 +27,10 @@
                                 {{ item.name }}
                             </li>
                         </draggable>
+                        <div class="components-type">表单组件</div>
                         <draggable
                             class="components-content"
                             tag="ul"
-                            v-show="typeComponts === 'forms' || typeComponts === 'tabs'"
                             v-bind="{
                                 group: { name: 'forms', pull: 'clone', put: false },
                                 sort: true,
@@ -41,6 +44,8 @@
                             <li class="components-item" v-for="(item, index) in basicComponents" :key="index">
                                 {{ item.name }}
                             </li>
+                            <li class="components-item noop"></li>
+                            <li class="components-item noop"></li>
                         </draggable>
                     </div>
                 </div>
@@ -542,20 +547,35 @@ export default {
                 }
             }
             .components-wrap {
+                .save-control {
+                    width: 100%;
+                    margin-top: 10px;
+                }
                 .components-title {
-                    margin-top: 15px;
-                    margin-bottom: 10px;
-                    color: $blue;
+                    margin: 14px 0;
+                    color: $primary-color;
+                    font-size: 18px;
+                    font-weight: 600;
+                }
+                .components-type {
+                    margin: 14px 0 24px;
+                    font-size: 16px;
                 }
                 .components-content {
                     display: flex;
+                    align-items: center;
+                    justify-content: space-between;
                     flex-wrap: wrap;
                     .components-item {
-                        margin: 1%;
-                        width: 98%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 30%;
+                        min-height: 44px;
+                        margin-bottom: 12px;
+                        line-height: 1.4;
                         cursor: move;
                         user-select: none;
-                        line-height: 30px;
                         text-align: center;
                         background: #f4f6fc;
                         border: 1px solid #f4f6fc;
@@ -563,6 +583,11 @@ export default {
                             color: #409eff;
                             border: 1px dashed #409eff;
                         }
+                    }
+                    .noop {
+                        height: 0;
+                        min-height: 0;
+                        border: 0;
                     }
                 }
             }
