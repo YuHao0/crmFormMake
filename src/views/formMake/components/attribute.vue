@@ -1,6 +1,5 @@
 <template>
     <div class="forms">
-        <el-link type="primary" v-show="!them.showConfigurationProperties">属性编辑区域</el-link>
         <el-form ref="form" v-show="them.showConfigurationProperties === 'forms'">
             <div class="arrt-type-title">基础属性</div>
             <el-form-item label="字段名称">

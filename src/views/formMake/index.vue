@@ -1,61 +1,63 @@
 <template>
     <div class="form-make" id="formMake" :style="{ height: `${makeHeight}px`, overflow: 'hidden' }">
-        <el-row class="main-content" :style="{ height: '100%', overflow: 'auto' }">
-            <el-col :span="4">
-                <div class="content-item components-wrap">
-                    <el-button class="save-control" type="primary" @click="getJson('emit')">保存配置</el-button>
-                    <div class="components-title">
-                        <span class="el-icon-arrow-left"></span>
-                        组件库
+        <div class="main-content">
+            <div class="main-item components-wrap">
+                <transition name="slide-fade" mode="out-in">
+                    <div class="slide-content" v-if="!slideShow" key="slide">
+                        <div class="el-icon-s-unfold slide-item" @click="slideSwitch"></div>
                     </div>
-                    <div class="components-box">
-                        <div class="components-type">顶部区域</div>
-                        <draggable
-                            class="components-content"
-                            tag="ul"
-                            v-bind="{
-                                group: { name: 'buttons', pull: 'clone', put: false },
-                                sort: true,
-                                ghostClass: 'ghost'
-                            }"
-                            :list="buttons"
-                            @end="handleMoveEnd($event, 'source')"
-                            @start="handleMoveStart"
-                            :move="handleMove"
-                        >
-                            <li class="components-item" v-for="(item, index) in buttons" :key="index">
-                                {{ item.name }}
-                            </li>
-                        </draggable>
-                        <div class="components-type">表单组件</div>
-                        <draggable
-                            class="components-content"
-                            tag="ul"
-                            v-bind="{
-                                group: { name: 'forms', pull: 'clone', put: false },
-                                sort: true,
-                                ghostClass: 'ghost'
-                            }"
-                            :list="basicComponents"
-                            @end="handleMoveEnd($event, 'source')"
-                            @start="handleMoveStart"
-                            :move="handleMove"
-                        >
-                            <li class="components-item" v-for="(item, index) in basicComponents" :key="index">
-                                {{ item.name }}
-                            </li>
-                            <li class="components-item noop"></li>
-                            <li class="components-item noop"></li>
-                        </draggable>
+                    <div v-if="slideShow" class="content-item" key="content">
+                        <div class="components-title" @click="slideSwitch">
+                            <span class="el-icon-arrow-left"></span>
+                            组件库
+                        </div>
+                        <el-button class="save-control" type="primary" @click="getJson('emit')">保存配置</el-button>
+                        <div class="components-box">
+                            <div class="components-type">顶部区域</div>
+                            <draggable
+                                class="components-content"
+                                tag="ul"
+                                v-bind="{
+                                    group: { name: 'buttons', pull: 'clone', put: false },
+                                    sort: true,
+                                    ghostClass: 'ghost'
+                                }"
+                                :list="buttons"
+                                @end="handleMoveEnd($event, 'source')"
+                                @start="handleMoveStart"
+                                :move="handleMove"
+                            >
+                                <li class="components-item" v-for="(item, index) in buttons" :key="index">
+                                    {{ item.name }}
+                                </li>
+                            </draggable>
+                            <div class="components-type">表单组件</div>
+                            <draggable
+                                class="components-content"
+                                tag="ul"
+                                v-bind="{
+                                    group: { name: 'forms', pull: 'clone', put: false },
+                                    sort: true,
+                                    ghostClass: 'ghost'
+                                }"
+                                :list="basicComponents"
+                                @end="handleMoveEnd($event, 'source')"
+                                @start="handleMoveStart"
+                                :move="handleMove"
+                            >
+                                <li class="components-item" v-for="(item, index) in basicComponents" :key="index">
+                                    {{ item.name }}
+                                </li>
+                                <li class="components-item noop"></li>
+                                <li class="components-item noop"></li>
+                            </draggable>
+                        </div>
                     </div>
-                </div>
-            </el-col>
-            <el-col :span="14">
-                <div class="content-item edit-content">
+                </transition>
+            </div>
+            <div class="main-item edit-content">
+                <div class="content-item">
                     <el-tabs v-model="activeType" @tab-click="editTabChange">
-                        <el-tab-pane label="基本属性" name="meta" class="tabHeight">
-                            <meta-component />
-                        </el-tab-pane>
                         <el-tab-pane label="Buttons区域" name="buttons">
                             <widget-button
                                 ref="buttons"
@@ -87,13 +89,18 @@
                         </el-tab-pane>
                     </el-tabs>
                 </div>
-            </el-col>
-            <el-col :span="6">
-                <div class="content-item attribute-content">
-                    <attribute></attribute>
+            </div>
+            <div class="main-item attribute-content">
+                <div class="content-item">
+                    <div class="arrt-title">
+                        <el-link type="primary">属性编辑区域</el-link>
+                        <el-link @click="activeType = 'meta'" type="primary">点击编辑主属性</el-link>
+                    </div>
+                    <meta-component v-show="activeType == 'meta'" />
+                    <attribute v-show="activeType != 'meta'"></attribute>
                 </div>
-            </el-col>
-        </el-row>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -184,6 +191,7 @@ export default {
             ...storeInfo,
             basicComponents,
             buttons,
+            slideShow: true,
             activeType: "meta",
             formData: {
                 sys_window: {
@@ -222,6 +230,9 @@ export default {
         this.setHeight();
     },
     methods: {
+        slideSwitch() {
+            this.slideShow = !this.slideShow;
+        },
         setHeight() {
             let formMake = document.getElementById("formMake"),
                 tTop = 0;
@@ -527,36 +538,43 @@ export default {
     position: relative;
     min-width: 1400px;
     .main-content {
-        .el-col {
+        display: flex;
+        justify-content: space-between;
+        height: 100%;
+        overflow: auto;
+        .main-item {
             height: 100%;
             overflow: hidden;
             .content-item {
                 padding: 10px;
-                // min-height: calc(100vh - 61px);
                 height: 100%;
-                .el-tabs {
-                    height: 100%;
-                }
-                .el-tabs__content {
-                    max-height: calc(100% - 70px);
-                    overflow: auto;
-                }
-                .components-box {
-                    max-height: calc(100% - 70px);
-                    overflow: auto;
+            }
+        }
+        .components-wrap {
+            .slide-content {
+                margin-top: 20px;
+                cursor: pointer;
+                .slide-item {
+                    color: $primary-color;
+                    font-size: 24px;
                 }
             }
-            .components-wrap {
-                .save-control {
-                    width: 100%;
-                    margin-top: 10px;
-                }
-                .components-title {
-                    margin: 14px 0;
-                    color: $primary-color;
-                    font-size: 18px;
-                    font-weight: 600;
-                }
+            .content-item {
+                width: 240px;
+            }
+            .save-control {
+                width: 100%;
+            }
+            .components-title {
+                margin: 14px 0;
+                color: $primary-color;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: 600;
+            }
+            .components-box {
+                max-height: calc(100% - 70px);
+                overflow: auto;
                 .components-type {
                     margin: 14px 0 24px;
                     font-size: 16px;
@@ -591,38 +609,62 @@ export default {
                     }
                 }
             }
-            .edit-content {
-                .ghost {
-                    overflow: hidden;
-                    height: 0;
-                    padding: 0;
-                    background: #f56c6c;
-                    border: 2px solid #f56c6c;
-                    outline-width: 0;
-                    font-size: 0;
-                }
-                .json-content {
-                    .control-content {
-                        margin-bottom: 10px;
-                    }
-                }
-                .tabHeight {
-                    height: 800px;
-                    overflow: auto;
+            .slide-fade-enter-active {
+                transition: all 0.3s ease;
+            }
+            .slide-fade-leave-active {
+                transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+            }
+            .slide-fade-enter,
+            .slide-fade-leave-to {
+                transform: translateX(10px);
+                opacity: 0;
+            }
+        }
+        .edit-content {
+            flex: 1;
+            transition: all 0.3s ease;
+            .el-tabs {
+                height: 100%;
+            }
+            .el-tabs__content {
+                max-height: calc(100% - 70px);
+                overflow: auto;
+            }
+            .ghost {
+                overflow: hidden;
+                height: 0;
+                padding: 0;
+                background: #f56c6c;
+                border: 2px solid #f56c6c;
+                outline-width: 0;
+                font-size: 0;
+            }
+            .json-content {
+                .control-content {
+                    margin-bottom: 10px;
                 }
             }
-            .attribute-content {
-                position: sticky;
-                top: 0;
-                margin: 10px;
-                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-                .attribute-title {
-                    margin-bottom: 20px;
-                    color: $blue;
+            .tabHeight {
+                height: 800px;
+                overflow: auto;
+            }
+        }
+        .attribute-content {
+            width: 25%;
+            position: sticky;
+            top: 0;
+            margin: 10px;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            .arrt-title {
+                margin-bottom: 20px;
+                color: $blue;
+                .el-link {
+                    margin-right: 10px;
                 }
-                .el-select {
-                    width: 100%;
-                }
+            }
+            .el-select {
+                width: 100%;
             }
         }
     }

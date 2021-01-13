@@ -5,7 +5,7 @@
         :model="them.sys_window"
         v-if="them.sys_window"
         label-position="right"
-        label-width="80px"
+        label-width="40px"
     >
         <div class="form-title">window窗口对象</div>
         <div class="meta-wrap">
@@ -198,7 +198,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .mate-form-cotent {
-    padding: 12px;
+    height: 100%;
+    overflow: auto;
     .form-title {
         margin-bottom: 12px;
         color: $blue;
@@ -214,7 +215,7 @@ export default {
         .el-select,
         .el-textarea,
         .noop-el {
-            width: 180px;
+            width: 100px;
         }
         .el-form-item__label {
             display: flex;
