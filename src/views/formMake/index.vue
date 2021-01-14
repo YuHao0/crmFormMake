@@ -58,23 +58,19 @@
             <div class="main-item edit-content">
                 <div class="content-item">
                     <el-tabs v-model="activeType" @tab-click="editTabChange">
-                        <el-tab-pane label="Buttons区域" name="buttons">
+                        <el-tab-pane label="窗口主体区域" name="forms">
                             <widget-button
                                 ref="buttons"
                                 :list="sys_button"
                                 @buttonChange="buttonChange"
                                 @delComPerties="delComPerties"
                             ></widget-button>
-                        </el-tab-pane>
-                        <el-tab-pane label="窗口主体区域" name="forms">
                             <widget-form
                                 ref="widgetFormMain"
                                 :list="mainItems"
                                 @formChange="formChange"
                                 @delComPerties="delComPerties"
                             ></widget-form>
-                        </el-tab-pane>
-                        <el-tab-pane label="Tabs区域" name="tabs">
                             <Tabs
                                 :tabs="tabs"
                                 @addTabs="addTabs"
@@ -94,10 +90,12 @@
                 <div class="content-item">
                     <div class="arrt-title">
                         <el-link type="primary">属性编辑区域</el-link>
-                        <el-link @click="activeType = 'meta'" type="primary">点击编辑主属性</el-link>
+                        <el-link @click="attrType = 'meta'" type="primary" v-show="attrType != 'meta'">
+                            点击编辑主属性
+                        </el-link>
                     </div>
-                    <meta-component v-show="activeType == 'meta'" />
-                    <attribute v-show="activeType != 'meta'"></attribute>
+                    <meta-component v-show="attrType == 'meta'" />
+                    <attribute v-show="attrType != 'meta'"></attribute>
                 </div>
             </div>
         </div>
@@ -167,7 +165,6 @@ export default {
         },
         conProPertiesForm: {
             handler() {
-                // this.$emit("saveComPerties");
                 this.saveComPerties();
             },
             immediate: false,
@@ -192,7 +189,8 @@ export default {
             basicComponents,
             buttons,
             slideShow: true,
-            activeType: "meta",
+            activeType: "forms",
+            attrType: "forms",
             formData: {
                 sys_window: {
                     data: ""
@@ -244,8 +242,9 @@ export default {
         },
         // 切换主区域tab
         editTabChange({ name }) {
-            this.showConfigurationProperties = "";
-            this.location = { type: "", value: "" };
+            this.showConfigurationProperties = ""; // arrtibute.vue 组件中区分form类型使用
+            this.location = { type: "", value: "" }; // forms区域中选中的某个item
+            this.attrType = name;
             if (name == "jsonContent") {
                 // 进入jons编辑器
                 this.makeJson();
@@ -307,6 +306,7 @@ export default {
             return arr;
         },
         saveComPerties() {
+            // 某个属性改变后将改变后的结果覆盖到当前页面对应的变量
             const { type, value } = this.location;
             switch (type) {
                 case "buttons":

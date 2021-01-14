@@ -1,5 +1,5 @@
 <template>
-    <div class="widget-itme-content">
+    <div class="widget-button-content">
         <el-form ref="form" label-position="right" label-width="120px">
             <draggable
                 v-model="dataList"
@@ -97,13 +97,18 @@ export default {
 };
 </script>
 <style lang="scss">
-.widget-itme-content {
+.widget-button-content {
     .drag-content {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        align-content: flex-start;
         padding: 10px;
-        min-height: 600px;
+        min-height: 100px;
         border: 1px dashed #dcdfe6;
         .drag-item {
-            margin-bottom: 5px;
+            margin-right: 14px;
+            margin-bottom: 14px;
             padding-top: 5px;
             padding-right: 5px;
             cursor: move;
