@@ -1,16 +1,16 @@
 <template>
-  <div></div>
+    <div>{{ info.label }}</div>
 </template>
 
 <script>
 export default {
-  props: {
-    info: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-  },
+    props: {
+        info: {
+            type: Object,
+            default() {
+                return {};
+            }
+        }
+    }
 };
 </script>

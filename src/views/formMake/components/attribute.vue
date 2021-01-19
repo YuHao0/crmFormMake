@@ -364,9 +364,14 @@ export default {
         align-items: center;
         .el-form-item {
             width: 48%;
+            .el-form-item__label {
+                margin-bottom: 4px;
+                line-height: 1.4;
+            }
         }
         .arrt-type-title {
             width: 100%;
+            margin-bottom: 10px;
             padding: 4px 8px;
             color: #fff;
             font-weight: bold;

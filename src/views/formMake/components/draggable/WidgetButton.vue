@@ -1,5 +1,5 @@
 <template>
-    <div class="widget-button-content">
+    <div id="widget-button-content">
         <el-form ref="form" label-position="right" label-width="120px">
             <draggable
                 v-model="dataList"
@@ -24,9 +24,7 @@
                         'active-main-item': them.location.type === 'buttons' && them.location.value == index
                     }"
                 >
-                    <el-form-item :label="item.name">
-                        <el-button>{{ item.name }}</el-button>
-                    </el-form-item>
+                    <el-button type="primary">{{ item.name }}</el-button>
                 </div>
             </draggable>
         </el-form>
@@ -53,11 +51,14 @@ export default {
     },
     data() {
         return {
-            dataList: this.list,
-            selectOption: [{ value: "选项1" }, { value: "选项2" }, { value: "选项3" }]
+            dataList: this.list
         };
     },
-    mounted() {},
+    watch: {
+        list(val) {
+            this.dataList = val;
+        }
+    },
     methods: {
         copy(source) {
             return JSON.parse(JSON.stringify(source));
@@ -88,69 +89,21 @@ export default {
             return this.dataList;
         }
     },
-    created() {},
-    watch: {
-        list(val) {
-            this.dataList = val;
-        }
-    }
+    created() {}
 };
 </script>
 <style lang="scss">
-.widget-button-content {
-    .drag-content {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        align-content: flex-start;
-        padding: 10px;
-        min-height: 100px;
-        border: 1px dashed #dcdfe6;
-        .drag-item {
-            margin-right: 14px;
-            margin-bottom: 14px;
-            padding-top: 5px;
-            padding-right: 5px;
-            cursor: move;
-            border: 1px solid rgba(236, 245, 255, 0.6);
-            background: rgba(236, 245, 255, 0.3);
-            &.active-main-item,
-            &:hover {
-                outline: 1px solid $primary-color;
-                border: 1px solid $primary-color;
-                outline-offset: -1px;
-            }
-            &:hover {
-                background: $primary-background-color;
-            }
-            .el-select {
-                width: 100%;
-            }
-        }
-        ::v-deep [class*="el-"] {
-            cursor: move;
-        }
-        .ghost.drag-item {
-            overflow: hidden;
-            padding: 0;
-            height: 0;
-            outline: 1px solid #f56c6c;
-            outline-width: 0;
-            border: 1px solid #f56c6c;
-            background: #f56c6c;
-        }
-    }
-    ::v-deep .avatar-uploader {
-        .el-upload {
-            border: 1px dashed #8c939d;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .el-upload:hover {
-            border-color: #409eff;
-        }
+#widget-button-content {
+    position: relative;
+    &::after {
+        content: "按钮区域";
+        top: 30%;
+        left: 30%;
+        position: absolute;
+        font-size: 40px;
+        font-weight: bold;
+        color: rgba(234, 234, 234, 45%);
+        z-index: -1;
     }
 }
 </style>

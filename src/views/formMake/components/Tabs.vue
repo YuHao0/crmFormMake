@@ -1,5 +1,5 @@
 <template>
-    <div class="tabs">
+    <div class="tabs-content">
         <el-button @click="addTabs">添加tabs</el-button><el-button @click="delTabs">删除当前tabs</el-button>
         <el-button @click="beforeTabs">向前移动</el-button><el-button @click="laterTabs">向后移动</el-button>
         <el-tabs v-model="activeType" @tab-click="editTabChange">
@@ -141,8 +141,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tabs {
-    height: 100%;
+.tabs-content {
+    padding-top: 10px;
     .el-tabs {
         height: calc(100% - 40px);
         .el-tabs__content {

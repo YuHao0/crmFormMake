@@ -1,5 +1,5 @@
 <template>
-    <div class="widget-itme-content">
+    <div id="widget-itme-content">
         <el-form ref="form" label-position="left" label-width="120px">
             <draggable
                 v-model="dataList"
@@ -26,9 +26,7 @@
                         lable: isExistTitle && item.uitype != 'title'
                     }"
                 >
-                    <el-form-item :label="item.label">
-                        <component :is="getType(item.uitype)" :info="item"></component>
-                    </el-form-item>
+                    <component :is="getType(item.uitype)" :info="item"></component>
                 </div>
             </draggable>
         </el-form>
@@ -185,70 +183,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.widget-itme-content {
-    .drag-content {
-        padding: 10px;
-        min-height: 600px;
-        border: 1px dashed #dcdfe6;
-        .drag-item {
-            margin-bottom: 5px;
-            padding-top: 5px;
-            padding-right: 5px;
-            overflow: auto;
-            cursor: move;
-            border: 1px solid rgba(236, 245, 255, 0.6);
-            background: rgba(236, 245, 255, 0.3);
-            &.active-main-item,
-            &:hover {
-                outline: 1px solid $primary-color;
-                border: 1px solid $primary-color;
-                outline-offset: -1px;
-            }
-            &:hover {
-                background: $primary-background-color;
-            }
-            .el-select {
-                width: 100%;
-            }
-            .el-form-item {
-                width: 95%;
-                float: right;
-                overflow: auto;
-                margin-bottom: 5px;
-            }
-            &.lable {
-                overflow: auto;
-                .el-form-item {
-                    width: 90%;
-                    float: right;
-                    overflow: auto;
-                }
-            }
-        }
-        ::v-deep [class*="el-"] {
-            cursor: move;
-        }
-        .ghost.drag-item {
-            overflow: hidden;
-            padding: 0;
-            height: 0;
-            outline: 1px solid #f56c6c;
-            outline-width: 0;
-            border: 1px solid #f56c6c;
-            background: #f56c6c;
-        }
+#widget-itme-content {
+    position: relative;
+    &::after {
+        content: "表单区域";
+        top: 30%;
+        left: 30%;
+        position: absolute;
+        font-size: 40px;
+        font-weight: bold;
+        color: rgba(234, 234, 234, 45%);
+        z-index: -1;
     }
-    ::v-deep .avatar-uploader {
-        .el-upload {
-            border: 1px dashed #8c939d;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .el-upload:hover {
-            border-color: #409eff;
-        }
+    .drag-content {
+        min-height: 400px;
     }
 }
 </style>

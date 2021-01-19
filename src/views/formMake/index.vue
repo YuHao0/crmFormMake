@@ -232,13 +232,13 @@ export default {
             this.slideShow = !this.slideShow;
         },
         setHeight() {
-            let formMake = document.getElementById("formMake"),
-                tTop = 0;
+            let formMake = document.getElementById("formMake");
+            let outTop = 0;
             while (formMake.offsetParent) {
-                tTop += formMake.offsetTop;
+                outTop += formMake.offsetTop;
                 formMake = formMake.offsetParent;
             }
-            this.makeHeight = document.documentElement.clientHeight - tTop;
+            this.makeHeight = document.documentElement.clientHeight - outTop;
         },
         // 切换主区域tab
         editTabChange({ name }) {
@@ -546,7 +546,7 @@ export default {
             height: 100%;
             overflow: hidden;
             .content-item {
-                padding: 10px;
+                padding: 0 10px;
                 height: 100%;
             }
         }
@@ -597,6 +597,7 @@ export default {
                         text-align: center;
                         background: #f4f6fc;
                         border: 1px solid #f4f6fc;
+                        border-radius: 4px;
                         &:hover {
                             color: #409eff;
                             border: 1px dashed #409eff;
@@ -631,13 +632,33 @@ export default {
                 max-height: calc(100% - 70px);
                 overflow: auto;
             }
+            .drag-content {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                align-content: flex-start;
+                padding: 10px;
+                min-height: 100px;
+                border: 1px dashed #dcdfe6;
+                .drag-item {
+                    margin: 0 6px 12px;
+                    cursor: move;
+                    &.active-main-item,
+                    &:hover {
+                        background: $primary-background-color;
+                    }
+                    .el-select {
+                        width: 100%;
+                    }
+                }
+            }
             .ghost {
+                min-width: 70px;
+                min-height: 40px;
                 overflow: hidden;
-                height: 0;
-                padding: 0;
                 background: #f56c6c;
+                border-radius: 4px;
                 border: 2px solid #f56c6c;
-                outline-width: 0;
                 font-size: 0;
             }
             .json-content {
@@ -649,12 +670,14 @@ export default {
                 height: 800px;
                 overflow: auto;
             }
+            ::v-deep [class*="el-"] {
+                cursor: move;
+            }
         }
         .attribute-content {
             width: 25%;
-            position: sticky;
-            top: 0;
-            margin: 10px;
+            margin-left: 10px;
+            padding-top: 10px;
             box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
             .arrt-title {
                 margin-bottom: 20px;
