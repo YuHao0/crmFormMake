@@ -3,7 +3,7 @@
         <el-form ref="form" v-show="them.showConfigurationProperties === 'forms'">
             <div class="arrt-type-title">基础属性</div>
             <el-form-item label="字段名称">
-                <el-input v-model="them.conProPertiesForm.id" placeholder="id"></el-input>
+                <el-input v-model="them.conProPertiesForm.id" placeholder="如：id"></el-input>
             </el-form-item>
             <el-form-item label="标签名称">
                 <el-input v-model="them.conProPertiesForm.label" placeholder="label"></el-input>
