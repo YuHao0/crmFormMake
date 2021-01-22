@@ -9,7 +9,7 @@
                 <el-input v-model="them.conProPertiesForm.label" placeholder="label"></el-input>
             </el-form-item>
             <el-form-item label="ui类型">
-                <el-select v-model="them.conProPertiesForm.uitype" placeholder="请选择uitype">
+                <el-select v-model="them.conProPertiesForm.uitype" placeholder="请选择uitype" disabled>
                     <el-option v-for="item in getUiType" :label="item.label" :value="item.value" :key="item.value">
                     </el-option>
                 </el-select>
@@ -355,7 +355,7 @@ export default {
 
 <style lang="scss" scoped>
 .forms {
-    height: 100%;
+    height: calc(100% - 40px);
     overflow: auto;
     ::v-deep .el-form {
         display: flex;

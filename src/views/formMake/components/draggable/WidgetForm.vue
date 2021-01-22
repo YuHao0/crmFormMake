@@ -19,14 +19,16 @@
                     :key="index"
                     class="drag-item"
                     @click="handleSelectWidget(item, index)"
-                    @dblclick="delComPerties(index)"
                     :class="{
                         'active-main-item': activeClass(index),
                         hide: !!item.bpm,
                         lable: isExistTitle && item.uitype != 'title'
                     }"
                 >
-                    <component :is="getType(item.uitype)" :info="item"></component>
+                    <div v-show="activeClass(index)" @click="delComPerties(index)" class="delete-icon">
+                        <i class="el-icon-ice-drink"></i>
+                    </div>
+                    <component :is="getType(item.uitype)" :info="item" :dragContent="dragContent"></component>
                 </div>
             </draggable>
         </el-form>
@@ -99,6 +101,7 @@ export default {
     },
     data() {
         return {
+            dragContent: {},
             dataList: this.list,
             formType:
                 "input,cascader,checkbox,datepicker,timepicker,label,radio,select,text,textarea,title,upload,mulitem,inner_table,progress"
@@ -111,7 +114,18 @@ export default {
             });
         }
     },
-    mounted() {},
+    mounted() {
+        let dragContent = document.querySelector(".drag-content");
+        this.dragContent = {
+            width: dragContent.clientWidth
+        };
+        window.onresize = () => {
+            console.log(123);
+            this.dragContent = {
+                width: dragContent.clientWidth
+            };
+        };
+    },
     methods: {
         getType(type) {
             if (!type) return "itemInput";
@@ -121,8 +135,6 @@ export default {
         handStart() {
             this.them.showConfigurationProperties = "";
             this.them.location = { type: "", value: "" };
-            //   this.$store.commit("setShowConfigurationProperties", "");
-            //   this.$store.commit("setLocation", { type: "", value: "" });
         },
         activeClass(index) {
             return (
@@ -151,7 +163,6 @@ export default {
         },
         handleSelectWidget(item, index) {
             this.setLocation(index);
-            //   this.$store.commit("setConProPertiesForm", item);
             this.them.conProPertiesForm = assign(item);
         },
         delComPerties(index) {
@@ -159,7 +170,6 @@ export default {
             this.$emit("delComPerties");
         },
         setLocation(index) {
-            //   this.$store.commit("setShowConfigurationProperties", "forms");
             this.them.showConfigurationProperties = "forms";
             let location =
                 this.ListIndex >= 0
@@ -177,9 +187,7 @@ export default {
         getList() {
             return this.dataList;
         }
-    },
-    destroyed() {},
-    created() {}
+    }
 };
 </script>
 <style lang="scss" scoped>
@@ -197,6 +205,28 @@ export default {
     }
     .drag-content {
         min-height: 400px;
+        .drag-item {
+            position: relative;
+            padding: 2px;
+            border-radius: 4px;
+            .delete-icon {
+                position: absolute;
+                right: 0;
+                top: -14px;
+                z-index: 10;
+                color: #e6a23c;
+                background: #ffffff;
+                cursor: pointer;
+            }
+            ::v-deep .el-form-item {
+                margin-bottom: 0;
+                .el-form-item__label,
+                .el-form-item__content {
+                    line-height: 1;
+                    word-break: break-all;
+                }
+            }
+        }
     }
 }
 </style>

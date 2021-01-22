@@ -79,29 +79,6 @@
                 <div class="noop-el"></div>
             </el-form-item>
         </div>
-        <!-- <div class="form-title">窗口配置详情信息(data/meta)</div>
-        <div class="meta-wrap">
-            <el-form-item label="窗口名" prop="name">
-                <el-input v-model="them.sys_window.data.meta.name"></el-input>
-            </el-form-item>
-            <el-form-item label="窗口类型" prop="template">
-                <el-select v-model="them.sys_window.data.meta.uitype" placeholder="请选择(与渲染模板一致)">
-                    <el-option label="query_list" value="query_list"> </el-option>
-                    <el-option label="bill" value="bill"> </el-option>
-                    <el-option label="tree_query_list" value="tree_query_list"> </el-option>
-                    <el-option label="query_detail" value="query_detail"> </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="外键(多个用逗号隔开)" prop="colpk">
-                <el-input v-model="them.sys_window.data.meta.colpk" placeholder=""></el-input>
-            </el-form-item>
-            <el-form-item label="页面参数请求接口" prop="url">
-                <el-input v-model="them.sys_window.data.meta.url"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
-            </el-form-item>
-        </div> -->
         <div class="form-title">属性配置(data/main/meta[0])</div>
         <div class="meta-wrap">
             <el-form-item label="id" prop="id">
@@ -198,7 +175,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .mate-form-cotent {
-    height: 100%;
+    height: calc(100% - 40px);
     overflow: auto;
     .form-title {
         margin-bottom: 12px;

@@ -1,5 +1,7 @@
 <template>
-    <div class="component-title" :style="style">{{ info.label || "请输入标题" }}</div>
+    <div class="component-title" :class="[info.size]" :style="style">
+        {{ info.label || "请输入标题" }}
+    </div>
 </template>
 
 <script>
@@ -10,23 +12,18 @@ export default {
             default() {
                 return {};
             }
-        }
+        },
+        dragContent: Object
     },
     data() {
-        return {
-            style: {
-                width: ""
-            }
-        };
+        return {};
     },
-    watch: {
-        info(val) {
-            console.log(val);
+    computed: {
+        style() {
+            return {
+                width: this.dragContent.width - 32 + "px"
+            };
         }
-    },
-    mounted() {
-        let dragContent = document.querySelector(".drag-content");
-        this.style.width = dragContent.clientWidth - 32 + "px";
     }
 };
 </script>
@@ -34,7 +31,17 @@ export default {
 .component-title {
     color: rgba(0, 0, 0, 0.85);
     font-weight: 500;
-    font-size: 18px;
-    line-height: 22px;
+    &.large {
+        font-size: 22px;
+        line-height: 26px;
+    }
+    &.medium {
+        font-size: 18px;
+        line-height: 22px;
+    }
+    &.small {
+        font-size: 16px;
+        line-height: 20px;
+    }
 }
 </style>

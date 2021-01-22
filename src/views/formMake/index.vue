@@ -59,26 +59,28 @@
                 <div class="content-item">
                     <el-tabs v-model="activeType" @tab-click="editTabChange">
                         <el-tab-pane label="窗口主体区域" name="forms">
-                            <widget-button
-                                ref="buttons"
-                                :list="sys_button"
-                                @buttonChange="buttonChange"
-                                @delComPerties="delComPerties"
-                            ></widget-button>
-                            <widget-form
-                                ref="widgetFormMain"
-                                :list="mainItems"
-                                @formChange="formChange"
-                                @delComPerties="delComPerties"
-                            ></widget-form>
-                            <Tabs
-                                :tabs="tabs"
-                                @addTabs="addTabs"
-                                @delTabs="delTabs"
-                                @delComPerties="delComPerties"
-                                @beforeTabs="beforeTabs"
-                                @laterTabs="laterTabs"
-                            ></Tabs>
+                            <div @click="attrTypeChange('forms')">
+                                <widget-button
+                                    ref="buttons"
+                                    :list="sys_button"
+                                    @buttonChange="buttonChange"
+                                    @delComPerties="delComPerties"
+                                ></widget-button>
+                                <widget-form
+                                    ref="widgetFormMain"
+                                    :list="mainItems"
+                                    @formChange="formChange"
+                                    @delComPerties="delComPerties"
+                                ></widget-form>
+                                <Tabs
+                                    :tabs="tabs"
+                                    @addTabs="addTabs"
+                                    @delTabs="delTabs"
+                                    @delComPerties="delComPerties"
+                                    @beforeTabs="beforeTabs"
+                                    @laterTabs="laterTabs"
+                                ></Tabs>
+                            </div>
                         </el-tab-pane>
                         <el-tab-pane label="JSON区域" name="jsonContent" class="json-content">
                             <json-editor ref="jsonEditor" :jsonData="formData"></json-editor>
@@ -90,7 +92,7 @@
                 <div class="content-item">
                     <div class="arrt-title">
                         <el-link type="primary">属性编辑区域</el-link>
-                        <el-link @click="attrType = 'meta'" type="primary" v-show="attrType != 'meta'">
+                        <el-link @click="attrTypeChange('meta')" type="primary" v-show="attrType != 'meta'">
                             点击编辑主属性
                         </el-link>
                     </div>
@@ -240,11 +242,17 @@ export default {
             }
             this.makeHeight = document.documentElement.clientHeight - outTop;
         },
+        attrTypeChange(type) {
+            this.attrType = type;
+            if (type == "meta") {
+                this.location = { type: "", value: "" }; // forms区域中选中的某个item
+                this.showConfigurationProperties = "";
+            }
+        },
         // 切换主区域tab
         editTabChange({ name }) {
             this.showConfigurationProperties = ""; // arrtibute.vue 组件中区分form类型使用
             this.location = { type: "", value: "" }; // forms区域中选中的某个item
-            this.attrType = name;
             if (name == "jsonContent") {
                 // 进入jons编辑器
                 this.makeJson();
