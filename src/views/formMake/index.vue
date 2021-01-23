@@ -57,7 +57,7 @@
             </div>
             <div class="main-item edit-content">
                 <div class="content-item">
-                    <el-tabs v-model="activeType" @tab-click="editTabChange">
+                    <el-tabs v-model="activeType" :before-leave="tabChangeCheck" @tab-click="editTabChange">
                         <el-tab-pane label="窗口主体区域" name="forms">
                             <div @click="attrTypeChange('forms')">
                                 <widget-button
@@ -250,9 +250,24 @@ export default {
             }
         },
         // 切换主区域tab
+        tabChangeCheck(name) {
+            if (name == "forms") {
+                // 离开jons编辑器 校验json是否可解析
+                try {
+                    this.$refs.jsonEditor.getValue();
+                } catch (e) {
+                    this.$elMessage({
+                        type: "error",
+                        message: e
+                    });
+                    return false;
+                }
+            }
+        },
         editTabChange({ name }) {
             this.showConfigurationProperties = ""; // arrtibute.vue 组件中区分form类型使用
             this.location = { type: "", value: "" }; // forms区域中选中的某个item
+            this.typeComponts = name;
             if (name == "jsonContent") {
                 // 进入jons编辑器
                 this.makeJson();
@@ -260,12 +275,13 @@ export default {
                     this.$refs.jsonEditor.api("refresh");
                     this.$refs.jsonEditor.api("focus");
                 });
-            } else if (this.typeComponts == "jsonContent") {
+            }
+            if (name == "forms") {
                 // 离开jons编辑器
                 let _json = this.copy(this.$refs.jsonEditor.getValue());
                 this.disOptions(_json);
             }
-            this.typeComponts = name;
+            console.log(name);
         },
         addTabs({ callBack }) {
             this.tabs.meta.push({
@@ -408,8 +424,8 @@ export default {
                 }
             });
             // 判断meta下的bgm模版是否与items下对应
-            if (fdata.tabs.items[bpmKey] == bpmValue) {
-                _data.sys_window.bmpModel = bpmValue;
+            if (bpmKey != -1 && fdata.tabs.items[bpmKey].includes("$bpm")) {
+                _data.sys_window.bmpModel = bpmValue.replace("_metas", "");
                 fdata.tabs.meta.splice(bpmKey, 1);
                 fdata.tabs.items.splice(bpmKey, 1);
             }
@@ -435,9 +451,9 @@ export default {
             });
             if (_formData.sys_window.bmpModel) {
                 !fdata.tabs.meta.includes(_formData.sys_window.bmpModel) &&
-                    fdata.tabs.meta.push(_formData.sys_window.bmpModel);
+                    fdata.tabs.meta.push(_formData.sys_window.bmpModel + "_metas");
                 !fdata.tabs.items.includes(_formData.sys_window.bmpModel) &&
-                    fdata.tabs.items.push(_formData.sys_window.bmpModel);
+                    fdata.tabs.items.push(_formData.sys_window.bmpModel + "_items");
                 delete _formData.sys_window.bmpModel;
             }
             if (fdata.meta && fdata.meta.colpk && this.isString(fdata.meta.colpk)) {
