@@ -68,7 +68,7 @@
                                 ></widget-button>
                                 <widget-form
                                     ref="widgetFormMain"
-                                    name="mainFrom"
+                                    name="forms"
                                     :list="mainItems"
                                     @formChange="formChange"
                                     @delComPerties="delComPerties"

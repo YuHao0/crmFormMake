@@ -15,7 +15,7 @@
             >
                 <widget-form
                     ref="widgetFormTabs"
-                    name="tabsFrom"
+                    name="tabsFroms"
                     v-show="!item.bpm"
                     :list="getItem(items[index])"
                     :ListIndex="index"

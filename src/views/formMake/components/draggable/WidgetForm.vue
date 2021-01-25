@@ -20,15 +20,19 @@
                     class="drag-item"
                     @click="handleSelectWidget(item, index)"
                     :class="{
-                        'active-main-item': activeClass(index),
+                        'active-main-item': them.location.type == name && them.location.value == index,
                         lable: isExistTitle && item.uitype != 'title'
                     }"
                 >
-                    <div v-show="activeClass(index)" @click="delComPerties(index)" class="delete-icon">
+                    <div
+                        v-show="them.location.type == name && them.location.value == index"
+                        @click="delComPerties(index)"
+                        class="delete-icon"
+                    >
                         <i class="el-icon-ice-drink"></i>
                     </div>
                     <component
-                        :type="name == 'tabsFrom' ? them.conProPertiesTabs.type : name"
+                        :type="name == 'tabsFroms' ? them.conProPertiesTabs.type : name"
                         :is="getType(item.uitype)"
                         :info="item"
                         :dragContent="dragContent"
@@ -140,12 +144,6 @@ export default {
             this.them.showConfigurationProperties = "";
             this.them.location = { type: "", value: "" };
         },
-        activeClass(index) {
-            return (
-                (this.them.location.type === "forms" && this.them.location.value == index) ||
-                (this.them.location.type == "tabsForms" && this.them.location.value[1] == index)
-            );
-        },
         handleMoveEnd() {
             this.$emit("formChange", {
                 dataList: this.dataList,
@@ -175,17 +173,10 @@ export default {
         },
         setLocation(index) {
             this.them.showConfigurationProperties = "forms";
-            let location =
-                this.ListIndex >= 0
-                    ? {
-                          type: "tabsForms",
-                          value: [this.ListIndex, index]
-                      }
-                    : {
-                          type: "forms",
-                          value: index
-                      };
-            //   this.$store.commit("setLocation", location);
+            let location = {
+                type: this.name,
+                value: index
+            };
             this.them.location = location;
         },
         getList() {
