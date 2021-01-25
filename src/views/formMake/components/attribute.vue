@@ -84,7 +84,7 @@
             </el-form-item>
             <div class="arrt-type-title">交互逻辑</div>
             <el-form-item v-show="showModule('lookup', them.conProPertiesForm.uitype)" label="URI链接">
-                <el-input v-model="them.conProPertiesForm.lookup"></el-input>
+                <el-input v-model="them.conProPertiesForm.lookup" placeholder="lookup"></el-input>
             </el-form-item>
             <el-form-item label="选项">
                 <el-input v-model="them.conProPertiesForm.options" placeholder="给label/value list值"></el-input>
@@ -163,7 +163,7 @@
             <el-form-item label="id字段名">
                 <el-input
                     v-model="them.conProPertiesTabs.idcolumn"
-                    placeholder="用于更新查询依赖的主键字段，默认为id"
+                    placeholder="更新查询依赖的主键字段，默认为id"
                 ></el-input>
             </el-form-item>
             <el-form-item label="标题">
@@ -172,9 +172,8 @@
             <el-form-item label="布局类型">
                 <el-select v-model="them.conProPertiesTabs.type" placeholder="请选择">
                     <el-option label="表格" value="table"> </el-option>
-                    <el-option label="只读表格" value="grid"> </el-option>
                     <el-option label="表单" value="form"> </el-option>
-                    <el-option label="流程图" value="bpm_diagram"> </el-option>
+                    <!-- <el-option label="只读表格" value="grid"> </el-option> -->
                 </el-select>
             </el-form-item>
             <el-form-item label="初始化sql">

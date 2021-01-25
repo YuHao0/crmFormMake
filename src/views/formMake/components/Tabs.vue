@@ -1,7 +1,9 @@
 <template>
-    <div class="tabs-content">
-        <el-button @click="addTabs">添加tabs</el-button><el-button @click="delTabs">删除当前tabs</el-button>
-        <el-button @click="beforeTabs">向前移动</el-button><el-button @click="laterTabs">向后移动</el-button>
+    <div id="tabs-content">
+        <el-button @click="addTabs">添加tabs</el-button>
+        <el-button @click="delTabs">删除当前tabs</el-button>
+        <el-button @click="beforeTabs">向前移动</el-button>
+        <el-button @click="laterTabs">向后移动</el-button>
         <el-tabs v-model="activeType" @tab-click="editTabChange">
             <el-tab-pane
                 v-for="(item, index) in meta"
@@ -9,15 +11,27 @@
                 :label="item.title"
                 :name="'pane' + index"
                 :key="index"
+                :class="[them.conProPertiesTabs.type]"
             >
                 <widget-form
                     ref="widgetFormTabs"
+                    name="tabsFrom"
                     v-show="!item.bpm"
                     :list="getItem(items[index])"
                     :ListIndex="index"
                     @formChange="formChange"
                     @delComPerties="$emit('delComPerties')"
                 ></widget-form>
+                <div class="table-warp">
+                    <el-table :data="tableData" border class="tabs-table" v-if="them.conProPertiesTabs.type == 'table'">
+                        <el-table-column
+                            v-for="(item, index) in getItem(items[index])"
+                            :key="index"
+                            :prop="['date', 'name', 'address'][index % 3]"
+                        >
+                        </el-table-column>
+                    </el-table>
+                </div>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -57,7 +71,24 @@ export default {
             activeType: "pane0",
             meta: [],
             items: [],
-            tabIndex: 0
+            tabIndex: 0,
+            tableData: [
+                {
+                    date: "2016-05-02",
+                    name: "王小虎",
+                    address: "上海市普陀区金沙江路 1518 弄"
+                },
+                {
+                    date: "2016-05-04",
+                    name: "王小虎",
+                    address: "上海市普陀区金沙江路 1517 弄"
+                },
+                {
+                    date: "2016-05-01",
+                    name: "王小虎",
+                    address: "上海市普陀区金沙江路 1519 弄"
+                }
+            ]
         };
     },
     created() {
@@ -140,8 +171,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.tabs-content {
+<style lang="scss">
+#tabs-content {
     padding-top: 10px;
     .el-tabs {
         height: calc(100% - 40px);
@@ -153,9 +184,29 @@ export default {
             display: none;
         }
     }
-}
-
-.hide {
-    display: none;
+    .table {
+        .drag-content {
+            min-height: 35px;
+            justify-content: space-between;
+            padding: 0;
+            border: 1px solid #ebeef5;
+            border-bottom: 0;
+            border-right: 0;
+            .drag-item {
+                margin: 0;
+                padding: 10px;
+                flex: 1;
+                text-align: center;
+                border-radius: 0;
+                border-right: 1px solid #ebeef5;
+            }
+        }
+        .table-warp {
+            padding: 0 1px;
+            .el-table__header-wrapper {
+                display: none;
+            }
+        }
+    }
 }
 </style>

@@ -64,7 +64,10 @@
                 <el-input v-model="them.sys_window.write_permission"></el-input>
             </el-form-item>
             <el-form-item label="页面参数请求接口" prop="url">
-                <el-input v-model="them.sys_window.data.meta.url"></el-input>
+                <el-input v-model="them.sys_window.data.meta.url" placeholder="url"></el-input>
+            </el-form-item>
+            <el-form-item label="外键列colpk" prop="colpk">
+                <el-input v-model="them.sys_window.data.meta.colpk" placeholder="多个用,隔开"></el-input>
             </el-form-item>
             <el-form-item label="BPM模版" prop="bmpModel">
                 <el-input v-model="them.sys_window.bmpModel" placeholder="{ { 模版名 } }"></el-input>
@@ -85,7 +88,7 @@
                 <el-input v-model="them.sys_window.data.main.meta[0].id" placeholder="对象类型/表名"></el-input>
             </el-form-item>
             <el-form-item label="标题" prop="title">
-                <el-input v-model="them.sys_window.data.main.meta[0].title"></el-input>
+                <el-input v-model="them.sys_window.data.main.meta[0].title" placeholder="显示到面板的顶端"></el-input>
             </el-form-item>
             <el-form-item label="表名" prop="table">
                 <el-input

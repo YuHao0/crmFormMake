@@ -1,15 +1,22 @@
 <template>
     <div class="component-input" :class="[size]">
-        <div class="label">{{ info.label }}</div>
-        <el-input
-            v-model="info.value"
-            :readonly="info.readonly == 1"
-            :disabled="info.disable == 1"
-            :maxlength="info.maxlength"
-            :placeholder="info.placeholder"
-            :type="info.type || 'text'"
-            :size="size"
-        ></el-input>
+        <div v-show="type == 'table'">
+            <!-- tabs table -->
+            <div class="table-head">{{ info.label }}</div>
+        </div>
+        <div v-show="type != 'table'" class="component-form">
+            <!-- tabs form -->
+            <div class="label">{{ info.label }}</div>
+            <el-input
+                v-model="info.value"
+                :readonly="info.readonly == 1"
+                :disabled="info.disable == 1"
+                :maxlength="info.maxlength"
+                :placeholder="info.placeholder"
+                :type="info.type || 'text'"
+                :size="size"
+            ></el-input>
+        </div>
     </div>
 </template>
 
@@ -21,12 +28,8 @@ export default {
             default() {
                 return {};
             }
-        }
-    },
-    watch: {
-        info: function(val) {
-            console.log(val);
-        }
+        },
+        type: String
     },
     computed: {
         size: function() {
@@ -41,8 +44,10 @@ export default {
 </script>
 <style lang="scss">
 .component-input {
-    display: flex;
-    align-items: center;
+    .component-form {
+        display: flex;
+        align-items: center;
+    }
     .label {
         white-space: nowrap;
         margin-right: 10px;

@@ -21,14 +21,18 @@
                     @click="handleSelectWidget(item, index)"
                     :class="{
                         'active-main-item': activeClass(index),
-                        hide: !!item.bpm,
                         lable: isExistTitle && item.uitype != 'title'
                     }"
                 >
                     <div v-show="activeClass(index)" @click="delComPerties(index)" class="delete-icon">
                         <i class="el-icon-ice-drink"></i>
                     </div>
-                    <component :is="getType(item.uitype)" :info="item" :dragContent="dragContent"></component>
+                    <component
+                        :type="name == 'tabsFrom' ? them.conProPertiesTabs.type : name"
+                        :is="getType(item.uitype)"
+                        :info="item"
+                        :dragContent="dragContent"
+                    ></component>
                 </div>
             </draggable>
         </el-form>
@@ -92,7 +96,8 @@ export default {
             default() {
                 return -1;
             }
-        }
+        },
+        name: String
     },
     watch: {
         list(val) {
@@ -120,7 +125,6 @@ export default {
             width: dragContent.clientWidth
         };
         window.onresize = () => {
-            console.log(123);
             this.dragContent = {
                 width: dragContent.clientWidth
             };
@@ -190,7 +194,7 @@ export default {
     }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 #widget-itme-content {
     position: relative;
     &::after {
@@ -212,7 +216,7 @@ export default {
             .delete-icon {
                 position: absolute;
                 right: 0;
-                top: -14px;
+                top: 0;
                 z-index: 10;
                 color: #e6a23c;
                 background: #ffffff;

@@ -25,6 +25,8 @@ import {
   Icon,
   Link,
   Progress,
+  Table,
+  TableColumn,
   // MessageBox,
   // Message
 } from "element-ui";
@@ -54,6 +56,8 @@ Vue.use(Upload);
 Vue.use(Icon);
 Vue.use(Progress);
 Vue.use(Link);
+Vue.use(Table);
+Vue.use(TableColumn);
 
 // Vue.prototype.$loading = Loading.service;
 // Vue.prototype.$msgbox = MessageBox;
