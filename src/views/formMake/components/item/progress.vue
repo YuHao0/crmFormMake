@@ -1,22 +1,24 @@
 <template>
-  <el-progress class="progress" :percentage="70"></el-progress>
+    <div class="component-progress">
+        <el-progress :text-inside="true" :stroke-width="22" :percentage="80" status="warning"></el-progress>
+    </div>
 </template>
 
 <script>
 export default {
-  props: {
-    info: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-  },
+    props: {
+        info: {
+            type: Object,
+            default() {
+                return {};
+            }
+        }
+    }
 };
 </script>
 
 <style lang="scss" scoped>
-.progress {
-  margin-top: 12.5px;
+.component-progress {
+    min-width: 300px;
 }
 </style>

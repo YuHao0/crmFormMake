@@ -161,11 +161,10 @@ export default {
         },
         setLocation(index) {
             this.them.showConfigurationProperties = "forms";
-            let location = {
+            this.them.location = {
                 type: this.name,
                 value: index
             };
-            this.them.location = location;
         },
         getList() {
             return this.dataList;
