@@ -73,14 +73,7 @@
                                     @formChange="formChange"
                                     @delComPerties="delComPerties"
                                 ></widget-form>
-                                <Tabs
-                                    :tabs="tabs"
-                                    @addTabs="addTabs"
-                                    @delTabs="delTabs"
-                                    @delComPerties="delComPerties"
-                                    @beforeTabs="beforeTabs"
-                                    @laterTabs="laterTabs"
-                                ></Tabs>
+                                <Tabs :tabs="tabs" @delComPerties="delComPerties"></Tabs>
                             </div>
                         </el-tab-pane>
                         <el-tab-pane label="JSON区域" name="jsonContent" class="json-content">
@@ -282,57 +275,10 @@ export default {
                 let _json = this.copy(this.$refs.jsonEditor.getValue());
                 this.disOptions(_json);
             }
-            console.log(name);
-        },
-        addTabs({ callBack }) {
-            this.tabs.meta.push({
-                title: "新增Tabs"
-            });
-            this.tabs.items.push([]);
-            callBack();
-        },
-        delTabs({ index, callBack }) {
-            let that = this;
-            const meta = that.tabs.meta;
-            if (meta.length === 0 || this.has(meta[index], "bpm")) {
-                that.$elMessage({
-                    type: "error",
-                    message: "tabs为空或无法删除!"
-                });
-                return;
-            }
-            that.$elConfirm("此操作将永久删除该Tabs, 是否继续?", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                that.tabs.meta.splice(index, 1);
-                that.tabs.items.splice(index, 1);
-                callBack();
-            });
-        },
-        beforeTabs({ index, callBack }) {
-            if (index != 0) {
-                this.tabs.meta = this.swapArray(this.tabs.meta, index, -1);
-                this.tabs.items = this.swapArray(this.tabs.items, index, -1);
-                callBack();
-            }
-        },
-        laterTabs({ index, callBack }) {
-            let len = this.tabs.meta.length;
-            if (index + 1 != len) {
-                this.tabs.meta = this.swapArray(this.tabs.meta, index, 1);
-                this.tabs.items = this.swapArray(this.tabs.items, index, 1);
-                callBack();
-            }
-        },
-        swapArray(arr, index, num) {
-            arr[index] = arr.splice(index + num, 1, arr[index])[0];
-            return arr;
         },
         saveComPerties() {
             // 某个属性改变后将改变后的结果覆盖到当前页面对应的变量
-            const { type, value } = this.location;
+            const { type, value, listIndex } = this.location;
             switch (type) {
                 case "buttons":
                     this.$set(this.sys_button, value, this.copy(this.conProPertiesButtons));
@@ -344,7 +290,7 @@ export default {
                     this.$set(this.tabs.meta, value, this.copy(this.conProPertiesTabs));
                     break;
                 case "tabsForms":
-                    this.$set(this.tabs.items[value[0]], value[1], this.copy(this.conProPertiesForm));
+                    this.$set(this.tabs.items[listIndex], value, this.copy(this.conProPertiesForm));
                     break;
             }
         },
@@ -354,7 +300,7 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning"
             }).then(() => {
-                const { type, value } = this.location;
+                const { type, value, listIndex } = this.location;
                 switch (type) {
                     case "buttons":
                         this.sys_button.splice(value, 1);
@@ -363,7 +309,7 @@ export default {
                         this.mainItems.splice(value, 1);
                         break;
                     case "tabsForms":
-                        this.tabs.items[value[0]].splice(value[1], 1);
+                        this.tabs.items[listIndex].splice(value, 1);
                         break;
                 }
                 this.$elMessage({

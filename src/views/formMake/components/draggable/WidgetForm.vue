@@ -95,12 +95,6 @@ export default {
                 return [];
             }
         },
-        ListIndex: {
-            type: Number,
-            default() {
-                return -1;
-            }
-        },
         name: String
     },
     watch: {
@@ -145,10 +139,7 @@ export default {
             this.them.location = { type: "", value: "" };
         },
         handleMoveEnd() {
-            this.$emit("formChange", {
-                dataList: this.dataList,
-                index: this.ListIndex
-            });
+            this.$emit("formChange", { dataList: this.dataList });
         },
         handleWidgetAdd(evt) {
             let index = evt.newIndex,
@@ -158,10 +149,7 @@ export default {
                 uitype: list.uitype,
                 ...list.default
             });
-            this.$emit("formChange", {
-                dataList: this.dataList,
-                index: this.ListIndex
-            });
+            this.$emit("formChange", { dataList: this.dataList });
         },
         handleSelectWidget(item, index) {
             this.setLocation(index);

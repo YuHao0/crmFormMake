@@ -1,7 +1,7 @@
 <template>
     <div id="tabs-content">
         <el-button @click="addTabs">添加tabs</el-button>
-        <el-button @click="delTabs">删除当前tabs</el-button>
+        <el-button @click="delTabs" v-show="meta.length">删除当前tabs</el-button>
         <el-button @click="beforeTabs">向前移动</el-button>
         <el-button @click="laterTabs">向后移动</el-button>
         <el-tabs v-model="activeType" @tab-click="editTabChange">
@@ -74,19 +74,19 @@ export default {
             tabIndex: 0,
             tableData: [
                 {
-                    date: "2016-05-02",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄"
+                    date: "数据A1",
+                    name: "数据A2",
+                    address: "数据A3"
                 },
                 {
-                    date: "2016-05-04",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1517 弄"
+                    date: "数据B1",
+                    name: "数据B2",
+                    address: "数据B3"
                 },
                 {
-                    date: "2016-05-01",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1519 弄"
+                    date: "数据C1",
+                    name: "数据C2",
+                    address: "数据C3"
                 }
             ]
         };
@@ -94,8 +94,8 @@ export default {
     created() {
         this.meta = this.tabs.meta;
         this.items = this.tabs.items;
+        this.them.location.listIndex = this.tabIndex;
     },
-    mounted() {},
     methods: {
         getItem(list) {
             return this.isArray(list) ? list : [];
@@ -103,12 +103,13 @@ export default {
         isArray(str) {
             return Object.prototype.toString.call(str) === "[object Array]";
         },
-        formChange({ index, dataList }) {
-            this.$set(this.items, index, dataList);
+        formChange({ dataList }) {
+            this.$set(this.items, this.tabIndex, dataList);
         },
         editTabChange({ index }) {
             this.tabIndex = index;
             this.them.showConfigurationProperties = "tabs";
+            // location  当先操作的区域
             this.them.location = {
                 type: "tabs",
                 value: this.tabIndex
@@ -116,56 +117,62 @@ export default {
             this.them.conProPertiesTabs = assign(this.meta[index]);
         },
         addTabs() {
-            let that = this;
-            this.$emit("addTabs", {
-                callBack() {
-                    that.activeType = `pane${that.meta.length - 1}`;
-                    that.tabIndex = that.meta.length - 1;
-                    that.editTabChange({ index: that.tabIndex });
-                }
+            this.them.tabs.meta.push({
+                title: `Tabs${this.meta.length + 1}`
             });
+            this.them.tabs.items.push([]);
+            // 指向新增的tabs(最后一个tabs)
+            this.tabIndex = this.meta.length - 1;
+            this.activeType = `pane${this.tabIndex}`;
+            this.them.location.listIndex = this.tabIndex;
+            this.editTabChange({ index: this.tabIndex });
         },
         delTabs() {
-            let that = this;
-            that.$emit("delTabs", {
-                index: that.tabIndex,
-                callBack() {
-                    that.them.showConfigurationProperties = "";
-                    if (that.tabIndex > 0) {
-                        that.activeType = `pane${that.tabIndex - 1}`;
-                        that.tabIndex = that.tabIndex - 1;
-                    } else {
-                        that.activeType = "pane0";
-                        that.tabIndex = 0;
-                    }
-                    that.$elMessage({
-                        type: "success",
-                        message: "删除成功!"
-                    });
+            this.$elConfirm("此操作将永久删除该Tabs, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                this.them.tabs.meta.splice(this.tabIndex, 1);
+                this.them.tabs.items.splice(this.tabIndex, 1);
+                this.them.showConfigurationProperties = "";
+                if (this.tabIndex > 0) {
+                    // 删除后
+                    this.tabIndex--;
+                    this.activeType = `pane${this.tabIndex}`;
                 }
+                this.them.location.listIndex = this.tabIndex;
+                this.$elMessage({
+                    type: "success",
+                    message: "删除成功!"
+                });
             });
+        },
+        swapArray(arr, index, num) {
+            arr[index] = arr.splice(index + num, 1, arr[index])[0];
+            return arr;
         },
         beforeTabs() {
-            let _index = parseInt(this.tabIndex);
-            this.$emit("beforeTabs", {
-                index: _index,
-                callBack: () => {
-                    this.them.showConfigurationProperties = "";
-                    this.activeType = `pane${_index - 1}`;
-                    this.tabIndex = _index - 1;
-                }
-            });
+            // 向前移动
+            if (this.tabIndex != 0) {
+                this.them.tabs.meta = this.swapArray(this.tabs.meta, this.tabIndex, -1);
+                this.them.tabs.items = this.swapArray(this.tabs.items, this.tabIndex, -1);
+                this.them.showConfigurationProperties = "tabs";
+                this.tabIndex--;
+                this.activeType = `pane${this.tabIndex}`;
+                this.them.location.listIndex = this.tabIndex;
+            }
         },
         laterTabs() {
-            let _index = parseInt(this.tabIndex);
-            this.$emit("laterTabs", {
-                index: _index,
-                callBack: () => {
-                    this.them.showConfigurationProperties = "";
-                    this.activeType = `pane${_index + 1}`;
-                    this.tabIndex = _index + 1;
-                }
-            });
+            let len = this.them.tabs.meta.length;
+            if (this.tabIndex + 1 != len) {
+                this.them.tabs.meta = this.swapArray(this.tabs.meta, this.tabIndex, 1);
+                this.them.tabs.items = this.swapArray(this.tabs.items, this.tabIndex, 1);
+                this.them.showConfigurationProperties = "tabs";
+                this.tabIndex++;
+                this.activeType = `pane${this.tabIndex}`;
+                this.them.location.listIndex = this.tabIndex;
+            }
         }
     }
 };
