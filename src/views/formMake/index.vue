@@ -370,9 +370,14 @@ export default {
                     if (item.colfk) item.colfk = item.colfk.toString();
                 }
             });
+            console.log(bpmValue, bpmKey, fdata);
             // 判断meta下的bgm模版是否与items下对应
             if (bpmKey != -1 && fdata.tabs.items[bpmKey].includes("$bpm")) {
-                _data.sys_window.bmpModel = bpmValue.replace("_metas", "");
+                _data.sys_window.bmpModel = bpmValue
+                    .replace("_metas", "")
+                    .replace("_items", "")
+                    .replace("{{", "")
+                    .replace("}}", "");
                 fdata.tabs.meta.splice(bpmKey, 1);
                 fdata.tabs.items.splice(bpmKey, 1);
             }
@@ -398,9 +403,9 @@ export default {
             });
             if (_formData.sys_window.bmpModel) {
                 !fdata.tabs.meta.includes(_formData.sys_window.bmpModel) &&
-                    fdata.tabs.meta.push(_formData.sys_window.bmpModel + "_metas");
+                    fdata.tabs.meta.push("{{" + _formData.sys_window.bmpModel + "_metas}}");
                 !fdata.tabs.items.includes(_formData.sys_window.bmpModel) &&
-                    fdata.tabs.items.push(_formData.sys_window.bmpModel + "_items");
+                    fdata.tabs.items.push("{{" + _formData.sys_window.bmpModel + "_items}}");
                 delete _formData.sys_window.bmpModel;
             }
             if (fdata.meta && fdata.meta.colpk && this.isString(fdata.meta.colpk)) {

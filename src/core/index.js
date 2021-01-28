@@ -2,6 +2,7 @@ import apiUrlList from "./api.js";
 import copy from "./copy";
 import axios from "axios";
 import dateFilter from "./dateFilter";
+import is from "is";
 
 let getBaseUrl = (origin = "gateway") => {
     let protocol = location.protocol;
@@ -108,6 +109,7 @@ Object.keys(apiUrlList.apiUrlList).forEach(itemFirst => {
 });
 
 export default {
+    is: is,
     api: api,
     dateFilter: dateFilter
 };
