@@ -5,7 +5,7 @@
 </template>
 <script>
 import "../../dist/crm-form-make.css";
-import crmFormMake from "../../dist/crm-form-make.umd.js";
+import crmFormMake from "../../dist/crm-form-make.umd.min.js";
 export default {
     components: {
         crmFormMake
