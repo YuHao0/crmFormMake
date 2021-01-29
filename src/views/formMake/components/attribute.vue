@@ -62,7 +62,7 @@
             <div class="arrt-type-title">交互样式</div>
             <el-form-item label="尺寸">
                 <el-select v-model="them.conProPertiesForm.size" placeholder="请选择(默认small)">
-                    <el-option label="small" value="small"> </el-option>
+                    <el-option label="normal" value="normal"> </el-option>
                     <el-option label="medium" value="medium"> </el-option>
                     <el-option label="large" value="large"> </el-option>
                 </el-select>

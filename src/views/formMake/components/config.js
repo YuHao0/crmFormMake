@@ -4,7 +4,7 @@ const basicComponents = [
     name: "标题",
     uitype: "title",
     default: {
-      size: "large",
+      size: "normal",
     },
   },
   {

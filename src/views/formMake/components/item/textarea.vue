@@ -34,7 +34,7 @@ export default {
     computed: {
         size: function() {
             return {
-                small: "mini",
+                normal: "mini",
                 medium: "small",
                 large: "medium"
             }[this.info.size || "small"];
@@ -60,7 +60,7 @@ export default {
         font-size: 18px;
         line-height: 22px;
     }
-    &.small {
+    &.normal {
         font-size: 16px;
         line-height: 20px;
     }

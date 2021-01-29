@@ -21,7 +21,8 @@
                     @click="handleSelectWidget(item, index)"
                     :class="{
                         'active-main-item': them.location.type == name && them.location.value == index,
-                        lable: isExistTitle && item.uitype != 'title'
+                        lable: isExistTitle && item.uitype != 'title',
+                        [item.size || 'normal']: true
                     }"
                 >
                     <div
@@ -189,7 +190,8 @@ export default {
         min-height: 400px;
         .drag-item {
             position: relative;
-            padding: 2px;
+            margin: 0 0 14px;
+            padding: 4px 8px;
             border-radius: 4px;
             .delete-icon {
                 position: absolute;
@@ -207,6 +209,15 @@ export default {
                     line-height: 1;
                     word-break: break-all;
                 }
+            }
+            &.large {
+                width: 100%;
+            }
+            &.medium {
+                width: 50%;
+            }
+            &.normal {
+                width: 25%;
             }
         }
     }

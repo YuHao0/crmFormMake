@@ -36,28 +36,32 @@ export default {
     watch: {
         jsonData: {
             handler(value) {
-                const editorValue = this.jsonEditor.getValue();
-                if (value !== editorValue) {
-                    this.jsonEditor.setValue(JSON.stringify(this.jsonData, null, 2));
+                if (this.jsonEditor) {
+                    const editorValue = this.jsonEditor.getValue();
+                    if (value !== editorValue) {
+                        this.jsonEditor.setValue(JSON.stringify(this.jsonData, null, 2));
+                    }
                 }
             },
             deep: true
         }
     },
     mounted() {
-        this.jsonEditor = CodeMirror.fromTextArea(this.$refs.textarea, {
-            lineNumbers: true,
-            mode: "application/json",
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
-            theme: "idea",
-            lint: true,
-            autofocus: true,
-            autoRefresh: true,
-            smartIndent: true,
-            foldGutter: true,
-            styleActiveLine: true
+        this.$nextTick(() => {
+            this.jsonEditor = CodeMirror.fromTextArea(this.$refs.textarea, {
+                lineNumbers: true,
+                mode: "application/json",
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
+                theme: "idea",
+                lint: true,
+                autofocus: true,
+                autoRefresh: true,
+                smartIndent: true,
+                foldGutter: true,
+                styleActiveLine: true
+            });
+            this.jsonEditor.setValue(JSON.stringify(this.jsonData, null, 2));
         });
-        this.jsonEditor.setValue(JSON.stringify(this.jsonData, null, 2));
     },
     methods: {
         getValue() {
