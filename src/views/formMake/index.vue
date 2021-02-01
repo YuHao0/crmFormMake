@@ -1,5 +1,9 @@
 <template>
-    <div class="form-make" id="formMake" :style="{ height: `${makeHeight}px`, overflow: 'hidden' }">
+    <div
+        class="form-make"
+        id="formMake"
+        :style="{ height: `${makeHeight}px`, width: `${pageWidth ? pageWidth : 'auto'}px` }"
+    >
         <div class="main-content">
             <div class="main-item components-wrap">
                 <transition name="slide-fade" mode="out-in">
@@ -10,6 +14,10 @@
                         <div class="components-title" @click="slideSwitch">
                             <span class="el-icon-arrow-left"></span>
                             组件库
+                        </div>
+                        <div class="slider-control" v-if="pageWidth">
+                            <span class="demonstration">页面宽度</span>
+                            <el-slider label="页面宽度" v-model="pageWidth" :min="800" :max="screenWidth"></el-slider>
                         </div>
                         <el-button class="save-control" type="primary" @click="getJson('emit')">保存配置</el-button>
                         <div class="components-box">
@@ -55,7 +63,7 @@
                     </div>
                 </transition>
             </div>
-            <div class="main-item edit-content">
+            <div class="main-item edit-content" ref="editContent">
                 <div class="content-item">
                     <el-tabs v-model="activeType" :before-leave="tabChangeCheck" @tab-click="editTabChange">
                         <el-tab-pane label="窗口主体区域" name="forms">
@@ -101,7 +109,6 @@
 <script>
 // import "../element";
 import Vue from "vue";
-import storeInfo from "./store/store";
 import { MessageBox, Message } from "element-ui";
 Vue.prototype.$elConfirm = MessageBox.confirm;
 Vue.prototype.$elMessage = Message;
@@ -181,10 +188,11 @@ export default {
     },
     data() {
         return {
-            ...storeInfo,
             basicComponents,
             buttons,
             slideShow: true,
+            pageWidth: 0,
+            screenWidth: 1400,
             activeType: "forms",
             attrType: "forms",
             formData: {
@@ -211,17 +219,25 @@ export default {
                 meta: [],
                 items: []
             },
+            typeComponts: "",
+            tabstypeComponts: "",
+            location: { type: "", value: "" }, //forms  buttons tabs  tabsForms
+            showConfigurationProperties: "", //显示配置属性 buttons 显示按钮配置属性 tabs 显示tabs配置属性 form 显示表单配置属性 空 隐藏配置属性
+            conProPertiesForm: {}, //form表单属性
+            conProPertiesButtons: {}, //按钮属性
+            conProPertiesTabs: {}, //tab属性
             configuration: {},
             makeHeight: "722",
             bpmArr: []
         };
     },
-    computed: {},
     created() {
         this.disOptions(this.options);
     },
     mounted() {
-        this.setHeight();
+        this.$nextTick(() => {
+            this.setHeight();
+        });
     },
     methods: {
         slideSwitch() {
@@ -230,6 +246,8 @@ export default {
         setHeight() {
             let formMake = document.getElementById("formMake");
             let outTop = 0;
+            this.screenWidth = formMake.clientWidth;
+            this.pageWidth = this.screenWidth;
             while (formMake.offsetParent) {
                 outTop += formMake.offsetTop;
                 formMake = formMake.offsetParent;
@@ -278,7 +296,7 @@ export default {
         },
         saveComPerties() {
             // 某个属性改变后将改变后的结果覆盖到当前页面对应的变量
-            const { type, value, listIndex } = this.location;
+            const { type, value } = this.location;
             switch (type) {
                 case "buttons":
                     this.$set(this.sys_button, value, this.copy(this.conProPertiesButtons));
@@ -290,7 +308,7 @@ export default {
                     this.$set(this.tabs.meta, value, this.copy(this.conProPertiesTabs));
                     break;
                 case "tabsForms":
-                    this.$set(this.tabs.items[listIndex], value, this.copy(this.conProPertiesForm));
+                    this.$set(this.tabs.items[this.tabIndex], value, this.copy(this.conProPertiesForm));
                     break;
             }
         },
@@ -300,7 +318,7 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning"
             }).then(() => {
-                const { type, value, listIndex } = this.location;
+                const { type, value } = this.location;
                 switch (type) {
                     case "buttons":
                         this.sys_button.splice(value, 1);
@@ -309,7 +327,7 @@ export default {
                         this.mainItems.splice(value, 1);
                         break;
                     case "tabsForms":
-                        this.tabs.items[listIndex].splice(value, 1);
+                        this.tabs.items[this.tabIndex].splice(value, 1);
                         break;
                 }
                 this.$elMessage({
@@ -511,8 +529,10 @@ export default {
 </script>
 <style lang="scss">
 .form-make {
+    overflow: hidden;
     position: relative;
-    min-width: 1400px;
+    min-width: 800px;
+    box-shadow: 1px 0 12px 0 rgba(0, 0, 0, 0.1);
     .main-content {
         display: flex;
         justify-content: space-between;

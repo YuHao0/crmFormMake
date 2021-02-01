@@ -33,7 +33,7 @@
                         <i class="el-icon-ice-drink"></i>
                     </div>
                     <component
-                        :type="name == 'tabsFroms' ? them.conProPertiesTabs.type : name"
+                        :type="name == 'tabsForms' ? them.conProPertiesTabs.type : name"
                         :is="getType(item.uitype)"
                         :info="item"
                         :dragContent="dragContent"
@@ -137,7 +137,8 @@ export default {
         },
         handStart() {
             this.them.showConfigurationProperties = "";
-            this.them.location = { type: "", value: "" };
+            this.them.location.type = "";
+            this.them.location.value = "";
         },
         handleMoveEnd() {
             this.$emit("formChange", { dataList: this.dataList });
@@ -162,10 +163,8 @@ export default {
         },
         setLocation(index) {
             this.them.showConfigurationProperties = "forms";
-            this.them.location = {
-                type: this.name,
-                value: index
-            };
+            this.them.location.type = this.name;
+            this.them.location.value = index;
         },
         getList() {
             return this.dataList;

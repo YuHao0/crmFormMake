@@ -15,7 +15,7 @@
             >
                 <widget-form
                     ref="widgetFormTabs"
-                    name="tabsFroms"
+                    name="tabsForms"
                     v-show="!item.bpm"
                     :list="getItem(items[index])"
                     :ListIndex="index"
@@ -94,7 +94,7 @@ export default {
     created() {
         this.meta = this.tabs.meta;
         this.items = this.tabs.items;
-        this.them.location.listIndex = this.tabIndex;
+        this.them.tabIndex = this.tabIndex;
     },
     methods: {
         getItem(list) {
@@ -124,7 +124,6 @@ export default {
             // 指向新增的tabs(最后一个tabs)
             this.tabIndex = this.meta.length - 1;
             this.activeType = `pane${this.tabIndex}`;
-            this.them.location.listIndex = this.tabIndex;
             this.editTabChange({ index: this.tabIndex });
         },
         delTabs() {
@@ -141,7 +140,7 @@ export default {
                     this.tabIndex--;
                     this.activeType = `pane${this.tabIndex}`;
                 }
-                this.them.location.listIndex = this.tabIndex;
+                this.them.tabIndex = this.tabIndex;
                 this.$elMessage({
                     type: "success",
                     message: "删除成功!"
@@ -160,7 +159,7 @@ export default {
                 this.them.showConfigurationProperties = "tabs";
                 this.tabIndex--;
                 this.activeType = `pane${this.tabIndex}`;
-                this.them.location.listIndex = this.tabIndex;
+                this.them.tabIndex = this.tabIndex;
             }
         },
         laterTabs() {
@@ -171,7 +170,7 @@ export default {
                 this.them.showConfigurationProperties = "tabs";
                 this.tabIndex++;
                 this.activeType = `pane${this.tabIndex}`;
-                this.them.location.listIndex = this.tabIndex;
+                this.them.tabIndex = this.tabIndex;
             }
         }
     }

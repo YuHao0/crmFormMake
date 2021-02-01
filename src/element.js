@@ -27,6 +27,7 @@ import {
   Progress,
   Table,
   TableColumn,
+  Slider,
   // MessageBox,
   // Message
 } from "element-ui";
@@ -58,6 +59,7 @@ Vue.use(Progress);
 Vue.use(Link);
 Vue.use(Table);
 Vue.use(TableColumn);
+Vue.use(Slider);
 
 // Vue.prototype.$loading = Loading.service;
 // Vue.prototype.$msgbox = MessageBox;
