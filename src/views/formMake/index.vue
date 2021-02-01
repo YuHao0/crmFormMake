@@ -1,9 +1,5 @@
 <template>
-    <div
-        class="form-make"
-        id="formMake"
-        :style="{ height: `${makeHeight}px`, width: `${pageWidth ? pageWidth : 'auto'}px` }"
-    >
+    <div class="form-make" id="formMake" :style="{ height: `${makeHeight}px` }">
         <div class="main-content">
             <div class="main-item components-wrap">
                 <transition name="slide-fade" mode="out-in">
@@ -17,7 +13,7 @@
                         </div>
                         <div class="slider-control" v-if="pageWidth">
                             <span class="demonstration">页面宽度</span>
-                            <el-slider label="页面宽度" v-model="pageWidth" :min="800" :max="screenWidth"></el-slider>
+                            <el-slider label="页面宽度" v-model="pageWidth" :min="260" :max="editWidth"></el-slider>
                         </div>
                         <el-button class="save-control" type="primary" @click="getJson('emit')">保存配置</el-button>
                         <div class="components-box">
@@ -63,7 +59,7 @@
                     </div>
                 </transition>
             </div>
-            <div class="main-item edit-content" ref="editContent">
+            <div class="main-item edit-content" ref="editContent" :style="{ width: `${pageWidth}px` }">
                 <div class="content-item">
                     <el-tabs v-model="activeType" :before-leave="tabChangeCheck" @tab-click="editTabChange">
                         <el-tab-pane label="窗口主体区域" name="forms">
@@ -90,7 +86,7 @@
                     </el-tabs>
                 </div>
             </div>
-            <div class="main-item attribute-content">
+            <div class="main-item attribute-content" :style="{ width: `${300 + editWidth - pageWidth}px` }">
                 <div class="content-item">
                     <div class="arrt-title">
                         <el-link type="primary">属性编辑区域</el-link>
@@ -192,7 +188,7 @@ export default {
             buttons,
             slideShow: true,
             pageWidth: 0,
-            screenWidth: 1400,
+            editWidth: 0,
             activeType: "forms",
             attrType: "forms",
             formData: {
@@ -236,6 +232,8 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
+            this.editWidth = this.$refs.editContent.clientWidth;
+            this.pageWidth = this.editWidth;
             this.setHeight();
         });
     },
@@ -246,8 +244,6 @@ export default {
         setHeight() {
             let formMake = document.getElementById("formMake");
             let outTop = 0;
-            this.screenWidth = formMake.clientWidth;
-            this.pageWidth = this.screenWidth;
             while (formMake.offsetParent) {
                 outTop += formMake.offsetTop;
                 formMake = formMake.offsetParent;
@@ -556,9 +552,10 @@ export default {
                 }
             }
             .content-item {
-                width: 240px;
+                width: 160px;
             }
             .save-control {
+                margin: 0;
                 width: 100%;
             }
             .components-title {
@@ -584,7 +581,7 @@ export default {
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        width: 30%;
+                        width: 48%;
                         min-height: 44px;
                         margin-bottom: 12px;
                         line-height: 1.4;
@@ -671,7 +668,7 @@ export default {
             }
         }
         .attribute-content {
-            width: 25%;
+            width: 300px;
             margin-left: 10px;
             padding-top: 10px;
             box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
