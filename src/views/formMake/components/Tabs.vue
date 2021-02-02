@@ -64,6 +64,9 @@ export default {
         tabs(val) {
             this.meta = val.meta;
             this.items = val.items;
+        },
+        tabIndex(val) {
+            this.them.tabIndex = val;
         }
     },
     data() {
@@ -108,6 +111,7 @@ export default {
         },
         editTabChange({ index }) {
             this.tabIndex = index;
+            // this.them.tabIndex = this.tabIndex;
             this.them.showConfigurationProperties = "tabs";
             // location  当先操作的区域
             this.them.location = {
@@ -140,7 +144,7 @@ export default {
                     this.tabIndex--;
                     this.activeType = `pane${this.tabIndex}`;
                 }
-                this.them.tabIndex = this.tabIndex;
+                // this.them.tabIndex = this.tabIndex;
                 this.$elMessage({
                     type: "success",
                     message: "删除成功!"
@@ -159,7 +163,7 @@ export default {
                 this.them.showConfigurationProperties = "tabs";
                 this.tabIndex--;
                 this.activeType = `pane${this.tabIndex}`;
-                this.them.tabIndex = this.tabIndex;
+                // this.them.tabIndex = this.tabIndex;
             }
         },
         laterTabs() {
@@ -170,7 +174,7 @@ export default {
                 this.them.showConfigurationProperties = "tabs";
                 this.tabIndex++;
                 this.activeType = `pane${this.tabIndex}`;
-                this.them.tabIndex = this.tabIndex;
+                // this.them.tabIndex = this.tabIndex;
             }
         }
     }
