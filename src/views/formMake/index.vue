@@ -640,9 +640,6 @@ export default {
                     &:hover {
                         background: $primary-background-color;
                     }
-                    .el-select {
-                        width: 100%;
-                    }
                 }
             }
             .ghost {

@@ -151,8 +151,18 @@
             </el-form-item>
         </el-form>
         <el-form ref="tabs" v-show="them.showConfigurationProperties === 'tabs'">
-            <el-form-item label="对象类型/表名">
+            <div class="arrt-type-title">基础属性</div>
+            <el-form-item label="对象名">
                 <el-input v-model="them.conProPertiesTabs.id" placeholder="使用表名，查询与更新会引用"></el-input>
+            </el-form-item>
+            <el-form-item label="标题">
+                <el-input v-model="them.conProPertiesTabs.title" placeholder="显示到面板的顶端"></el-input>
+            </el-form-item>
+            <el-form-item label="布局类型">
+                <el-select v-model="them.conProPertiesTabs.type" placeholder="请选择">
+                    <el-option label="表格" value="table"> </el-option>
+                    <el-option label="表单" value="form"> </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="表名">
                 <el-input
@@ -166,68 +176,17 @@
                     placeholder="更新查询依赖的主键字段，默认为id"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="标题">
-                <el-input v-model="them.conProPertiesTabs.title" placeholder="显示到面板的顶端"></el-input>
-            </el-form-item>
-            <el-form-item label="布局类型">
-                <el-select v-model="them.conProPertiesTabs.type" placeholder="请选择">
-                    <el-option label="表格" value="table"> </el-option>
-                    <el-option label="表单" value="form"> </el-option>
-                    <!-- <el-option label="只读表格" value="grid"> </el-option> -->
-                </el-select>
-            </el-form-item>
+            <div class="arrt-type-title">数据属性</div>
             <el-form-item label="初始化sql">
                 <el-input
                     v-model="them.conProPertiesTabs.sqlinit"
                     placeholder="用于新增功能，初始化时使用的sql"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="查询sql">
+            <el-form-item label="主查询sql">
                 <el-input
                     v-model="them.conProPertiesTabs.sqlselect"
                     placeholder="根据参数id查询返回当前面板对象的sql"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="是否可编辑(可写表达式)(0不限制 1禁止编辑)">
-                <el-input v-model="them.conProPertiesTabs.disable" placeholder="0不限制 1禁止编辑"></el-input>
-            </el-form-item>
-            <el-form-item label="表单更新触发器">
-                <el-input
-                    v-model="them.conProPertiesTabs.billtrigger"
-                    placeholder="保存数据后，渲染该属性的sql并执行"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="表单校验">
-                <el-input
-                    v-model="them.conProPertiesTabs.billcheck"
-                    placeholder="内容保存未提交之前渲染该属性的sql执行并返回错误内容"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="是否只读(可写表达式)(0不限制 1只读)">
-                <el-input v-model="them.conProPertiesTabs.readonly" placeholder="0不限制 1只读"></el-input>
-            </el-form-item>
-            <el-form-item label="必填校验">
-                <el-input
-                    v-model="them.conProPertiesTabs.allRequired"
-                    placeholder="提交时当前tab是否全部做必填项校验"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="colfk">
-                <el-input v-model="them.conProPertiesTabs.colfk" placeholder="多个使用逗号隔开"></el-input>
-            </el-form-item>
-            <el-form-item label="autodeleteby">
-                <el-input v-model="them.conProPertiesTabs.autodeleteby" placeholder="autodeleteby"></el-input>
-            </el-form-item>
-            <el-form-item label="唯一键列表">
-                <el-input
-                    v-model="them.conProPertiesTabs.unique"
-                    placeholder="保存时数据库返回唯一约束违反时报错列"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="下推表单sql">
-                <el-input
-                    v-model="them.conProPertiesTabs.sqldownpush"
-                    placeholder="用于已知上游数据下推业务"
                 ></el-input>
             </el-form-item>
             <el-form-item label="标量sql">
@@ -236,11 +195,54 @@
                     placeholder="配合sqlselect拿单行标量数据"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="发送MQ SQL">
-                <el-input v-model="them.conProPertiesTabs.sqlmq" placeholder="生成mq消息体用的SQL"></el-input>
-            </el-form-item>
             <el-form-item label="标量服务提取">
                 <el-input v-model="them.conProPertiesTabs.servicedata" placeholder="用于解析service层的数据"></el-input>
+            </el-form-item>
+            <el-form-item label="保存触sql">
+                <el-input
+                    v-model="them.conProPertiesTabs.billtrigger"
+                    placeholder="保存数据后，渲染该属性的sql并执行"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="唯一键列表">
+                <el-input
+                    v-model="them.conProPertiesTabs.unique"
+                    placeholder="保存时数据库返回唯一约束违反时报错列"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="colfk">
+                <el-input v-model="them.conProPertiesTabs.colfk" placeholder="多个使用逗号隔开"></el-input>
+            </el-form-item>
+            <div class="arrt-type-title">校验属性</div>
+            <el-form-item label="是否可编辑(可写表达式)">
+                <el-input v-model="them.conProPertiesTabs.disable" placeholder="0不限制 1禁止编辑"></el-input>
+            </el-form-item>
+            <el-form-item label="下推表单sql">
+                <el-input
+                    v-model="them.conProPertiesTabs.sqldownpush"
+                    placeholder="用于已知上游数据下推业务"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="mq触发sql">
+                <el-input v-model="them.conProPertiesTabs.sqlmq" placeholder="生成mq消息体用的SQL"></el-input>
+            </el-form-item>
+            <el-form-item label="表单校验">
+                <el-input
+                    v-model="them.conProPertiesTabs.billcheck"
+                    placeholder="内容保存未提交之前渲染该属性的sql执行并返回错误内容"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="是否只读(可写表达式)">
+                <el-input v-model="them.conProPertiesTabs.readonly" placeholder="0不限制 1只读"></el-input>
+            </el-form-item>
+            <el-form-item label="必填校验">
+                <el-input
+                    v-model="them.conProPertiesTabs.allRequired"
+                    placeholder="提交时当前tab是否全部做必填项校验"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="autodeleteby">
+                <el-input v-model="them.conProPertiesTabs.autodeleteby" placeholder="autodeleteby"></el-input>
             </el-form-item>
         </el-form>
         <el-form ref="buttons" v-show="them.showConfigurationProperties === 'buttons'">
@@ -362,7 +364,7 @@ export default {
         justify-content: space-between;
         align-items: center;
         .el-form-item {
-            width: 48%;
+            width: 100%;
             .el-form-item__label {
                 margin-bottom: 4px;
                 line-height: 1.4;

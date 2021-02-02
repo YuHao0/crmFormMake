@@ -16,9 +16,8 @@ export default {
     }
 };
 </script>
-
 <style lang="scss" scoped>
 .component-progress {
-    min-width: 300px;
+    width: 100%;
 }
 </style>

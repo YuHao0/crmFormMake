@@ -1,12 +1,5 @@
 <template>
-    <el-form
-        class="mate-form-cotent"
-        ref="form"
-        :model="them.sys_window"
-        v-if="them.sys_window"
-        label-position="right"
-        label-width="40px"
-    >
+    <el-form class="mate-form-cotent" ref="form" :model="them.sys_window" v-if="them.sys_window">
         <div class="form-title">window窗口对象</div>
         <div class="meta-wrap">
             <el-form-item label="编码" prop="code">
@@ -75,12 +68,6 @@
             <el-form-item label="导入配置" prop="import_config">
                 <el-input type="textarea" :autosize="true" v-model="them.sys_window.import_config"></el-input>
             </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
-            </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
-            </el-form-item>
         </div>
         <div class="form-title">属性配置(data/main/meta[0])</div>
         <div class="meta-wrap">
@@ -101,12 +88,6 @@
             </el-form-item>
             <el-form-item label="禁止编辑" prop="disable">
                 <el-input v-model="them.sys_window.data.main.meta[0].disable"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
-            </el-form-item>
-            <el-form-item>
-                <div class="noop-el"></div>
             </el-form-item>
         </div>
         <div class="form-title">sql配置(data/main/meta[0])</div>
@@ -181,35 +162,22 @@ export default {
     height: calc(100% - 40px);
     overflow: auto;
     .form-title {
-        margin-bottom: 12px;
-        color: $blue;
+        margin-bottom: 10px;
+        padding: 4px 8px;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 2px;
+        background: #096dd9;
     }
     ::v-deep .meta-wrap {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
         margin-bottom: 12px;
-        padding: 12px 12px 0;
-        border: 1px solid #eee;
-        .el-input,
-        .el-select,
-        .el-textarea,
-        .noop-el {
-            width: 100px;
-        }
-        .el-form-item__label {
-            display: flex;
-            align-items: center;
-            flex-direction: row-reverse;
-            min-height: 40px;
-            line-height: 1;
-        }
-        &.large-item {
-            .el-form-item {
-                width: 100%;
-            }
-            .el-textarea {
-                width: 100%;
+        .el-form-item {
+            width: 100%;
+            .el-form-item__label {
+                margin-bottom: 4px;
+                line-height: 1.4;
             }
         }
     }

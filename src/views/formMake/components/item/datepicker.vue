@@ -1,5 +1,7 @@
 <template>
-    <el-date-picker v-model="info.default" type="date" placeholder="选择日期"> </el-date-picker>
+    <div class="component-datepicker">
+        <el-date-picker v-model="info.default" size="mini" type="date" placeholder="选择日期"> </el-date-picker>
+    </div>
 </template>
 
 <script>
@@ -14,3 +16,11 @@ export default {
     }
 };
 </script>
+<style lang="scss" scoped>
+.component-datepicker {
+    .el-date-editor.el-input,
+    .el-date-editor.el-input__inner {
+        width: 100%;
+    }
+}
+</style>

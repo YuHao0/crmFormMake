@@ -35,9 +35,12 @@ export default {
     .component-form {
         display: flex;
         align-items: center;
+        .el-input,
+        .el-select {
+            width: 20%;
+        }
     }
     .label {
-        white-space: nowrap;
         margin-right: 10px;
     }
     &.large {
