@@ -10,11 +10,6 @@ export default {
     components: {
         crmFormMake
     },
-    computed: {
-        getInitData() {
-            return this.data;
-        }
-    },
     data() {
         return {
             xJson: {
@@ -107,10 +102,9 @@ export default {
             }
         };
     },
-    mounted() {},
     methods: {
         formMakeData(data) {
-            this.$emit("formMakeData", data);
+            console.log(data);
         }
     }
 };
