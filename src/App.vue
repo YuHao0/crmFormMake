@@ -15,11 +15,11 @@ export default {
             active: "",
             navList: [
                 {
-                    name: "home",
+                    name: "组件开发",
                     path: "/"
                 },
                 {
-                    name: "about",
+                    name: "测试打包后文件",
                     path: "/about"
                 }
             ]

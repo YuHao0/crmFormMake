@@ -46,7 +46,6 @@ export default {
 .component-textarea {
     .component-form {
         display: flex;
-        align-items: center;
     }
     .label {
         white-space: nowrap;

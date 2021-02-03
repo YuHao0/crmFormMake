@@ -1,35 +1,34 @@
 import Vue from "vue";
 import {
-  Button,
-  Select,
-  Option,
-  Menu,
-  MenuItem,
-  Row,
-  Col,
-  Tabs,
-  TabPane,
-  Form,
-  FormItem,
-  Input,
-  DatePicker,
-  TimePicker,
-  Radio,
-  RadioGroup,
-  RadioButton,
-  Checkbox,
-  CheckboxButton,
-  CheckboxGroup,
-  Cascader,
-  Upload,
-  Icon,
-  Link,
-  Progress,
-  Table,
-  TableColumn,
-  Slider,
-  // MessageBox,
-  // Message
+    Button,
+    Select,
+    Option,
+    Menu,
+    MenuItem,
+    Row,
+    Col,
+    Tabs,
+    TabPane,
+    Form,
+    FormItem,
+    Input,
+    DatePicker,
+    TimePicker,
+    Radio,
+    RadioGroup,
+    RadioButton,
+    Checkbox,
+    CheckboxButton,
+    CheckboxGroup,
+    Cascader,
+    Upload,
+    Icon,
+    Link,
+    Progress,
+    Table,
+    TableColumn,
+    Slider,
+    Popover
 } from "element-ui";
 
 Vue.use(Button);
@@ -60,11 +59,4 @@ Vue.use(Link);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(Slider);
-
-// Vue.prototype.$loading = Loading.service;
-// Vue.prototype.$msgbox = MessageBox;
-// Vue.prototype.$alert = MessageBox.alert;
-// Vue.prototype.$elConfirm = MessageBox.confirm;
-// Vue.prototype.$prompt = MessageBox.prompt;
-// Vue.prototype.$notify = Notification;
-// Vue.prototype.$elMessage = Message;
+Vue.use(Popover);

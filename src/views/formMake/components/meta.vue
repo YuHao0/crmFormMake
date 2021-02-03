@@ -66,7 +66,14 @@
                 <el-input v-model="them.sys_window.bmpModel" placeholder="{ { 模版名 } }"></el-input>
             </el-form-item>
             <el-form-item label="导入配置" prop="import_config">
-                <el-input type="textarea" :autosize="true" v-model="them.sys_window.import_config"></el-input>
+                <el-popover placement="left-start" width="600" trigger="click">
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 10 }"
+                        v-model="them.sys_window.import_config"
+                    ></el-input>
+                    <el-input type="textarea" slot="reference" v-model="them.sys_window.import_config"></el-input>
+                </el-popover>
             </el-form-item>
         </div>
         <div class="form-title">属性配置(data/main/meta[0])</div>
@@ -93,56 +100,100 @@
         <div class="form-title">sql配置(data/main/meta[0])</div>
         <div class="large-item meta-wrap">
             <el-form-item label="初始化sql" prop="sqlinit">
-                <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 4 }"
-                    :rows="5"
-                    placeholder="sqlinit"
-                    v-model="them.sys_window.data.main.meta[0].sqlinit"
-                ></el-input>
+                <el-popover placement="left-start" width="600" trigger="click">
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 10 }"
+                        placeholder="sqlinit"
+                        v-model="them.sys_window.data.main.meta[0].sqlinit"
+                    ></el-input>
+                    <el-input
+                        type="textarea"
+                        placeholder="sqlinit"
+                        slot="reference"
+                        v-model="them.sys_window.data.main.meta[0].sqlinit"
+                    ></el-input>
+                </el-popover>
             </el-form-item>
             <el-form-item label="查询sql" prop="sqlselect">
-                <el-input
-                    type="textarea"
-                    placeholder="sqlselect"
-                    :autosize="{ minRows: 4 }"
-                    v-model="them.sys_window.data.main.meta[0].sqlselect"
-                ></el-input>
+                <el-popover placement="left-start" width="600" trigger="click">
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 10 }"
+                        placeholder="sqlselect"
+                        v-model="them.sys_window.data.main.meta[0].sqlselect"
+                    ></el-input>
+                    <el-input
+                        type="textarea"
+                        placeholder="sqlselect"
+                        slot="reference"
+                        v-model="them.sys_window.data.main.meta[0].sqlselect"
+                    ></el-input>
+                </el-popover>
             </el-form-item>
             <el-form-item label="标量sql" prop="sqlscalar">
-                <el-input
-                    type="textarea"
-                    placeholder="sqlscalar"
-                    :autosize="{ minRows: 4 }"
-                    v-model="them.sys_window.data.main.meta[0].sqlscalar"
-                ></el-input>
+                <el-popover placement="left-start" width="600" trigger="click">
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 10 }"
+                        placeholder="sqlscalar"
+                        v-model="them.sys_window.data.main.meta[0].sqlscalar"
+                    ></el-input>
+                    <el-input
+                        type="textarea"
+                        placeholder="sqlscalar"
+                        slot="reference"
+                        v-model="them.sys_window.data.main.meta[0].sqlscalar"
+                    ></el-input>
+                </el-popover>
             </el-form-item>
             <el-form-item label="下推表单sql" prop="sqldownpush">
-                <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 4 }"
-                    :rows="5"
-                    placeholder="sqldownpush"
-                    v-model="them.sys_window.data.main.meta[0].sqldownpush"
-                ></el-input>
+                <el-popover placement="left-start" width="600" trigger="click">
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 10 }"
+                        placeholder="sqldownpush"
+                        v-model="them.sys_window.data.main.meta[0].sqldownpush"
+                    ></el-input>
+                    <el-input
+                        type="textarea"
+                        placeholder="sqldownpush"
+                        slot="reference"
+                        v-model="them.sys_window.data.main.meta[0].sqldownpush"
+                    ></el-input>
+                </el-popover>
             </el-form-item>
             <el-form-item label="表单校验" prop="billcheck">
-                <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 4 }"
-                    :rows="5"
-                    placeholder="billcheck"
-                    v-model="them.sys_window.data.main.meta[0].billcheck"
-                ></el-input>
+                <el-popover placement="left-start" width="600" trigger="click">
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 10 }"
+                        placeholder="billcheck"
+                        v-model="them.sys_window.data.main.meta[0].billcheck"
+                    ></el-input>
+                    <el-input
+                        type="textarea"
+                        placeholder="billcheck"
+                        slot="reference"
+                        v-model="them.sys_window.data.main.meta[0].billcheck"
+                    ></el-input>
+                </el-popover>
             </el-form-item>
             <el-form-item label="表单更新触发器" prop="billtrigger">
-                <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 4 }"
-                    :rows="5"
-                    placeholder="billtrigger"
-                    v-model="them.sys_window.data.main.meta[0].billtrigger"
-                ></el-input>
+                <el-popover placement="left-start" width="600" trigger="click">
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 10 }"
+                        placeholder="billtrigger"
+                        v-model="them.sys_window.data.main.meta[0].billtrigger"
+                    ></el-input>
+                    <el-input
+                        type="textarea"
+                        placeholder="billtrigger"
+                        slot="reference"
+                        v-model="them.sys_window.data.main.meta[0].billtrigger"
+                    ></el-input>
+                </el-popover>
             </el-form-item>
         </div>
     </el-form>

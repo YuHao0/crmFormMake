@@ -22,7 +22,7 @@
                     :class="{
                         'active-main-item': them.location.type == name && them.location.value == index,
                         lable: isExistTitle && item.uitype != 'title',
-                        [item.size || 'normal']: true
+                        [item.size || 'normal']: item.uitype != 'title'
                     }"
                 >
                     <div
@@ -33,6 +33,7 @@
                         <i class="el-icon-ice-drink"></i>
                     </div>
                     <component
+                        class="component-item"
                         :type="name == 'tabsForms' ? them.conProPertiesTabs.type : name"
                         :is="getType(item.uitype)"
                         :info="item"
@@ -189,7 +190,7 @@ export default {
         min-height: 400px;
         .drag-item {
             position: relative;
-            margin: 0 0 14px;
+            margin: 0 0 24px;
             padding: 4px 8px;
             border-radius: 4px;
             .delete-icon {
